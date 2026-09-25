@@ -315,8 +315,11 @@ function formatReportWithCalculations(report: any): DailyReport {
     expenses: expenseInputs as any,
     soma_lucros_parciais: calcs.soma_lucros_parciais,
     total_vendas_brutas: calcs.total_vendas_brutas,
+    total_taxas_acrescentadas: calcs.total_taxas_acrescentadas,
+    recarga_aki_lucro: calcs.recarga_aki_lucro,
     lucro_operacional: calcs.lucro_operacional,
     total_saidas: calcs.total_saidas,
     total_final: calcs.total_final,
+    total_final_sem_bonus: calcs.total_final_sem_bonus,
   };
 }

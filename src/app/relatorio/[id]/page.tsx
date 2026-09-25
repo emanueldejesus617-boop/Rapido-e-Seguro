@@ -189,7 +189,7 @@ function ReportDetailContent() {
                     TOTAL FINAL DO DIA (RESULTADO LÍQUIDO REAL)
                   </span>
                   <p className="text-xs text-emerald-400/90 print:text-emerald-800 mt-0.5">
-                    Valor líquido apurado no caixa após adição das taxas e dedução de todas as saídas.
+                    Fórmula: Vendas + Lucro Recarga AKI (+ Bónus AKI) − Saídas.
                   </p>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-300 print:text-emerald-900 font-mono">

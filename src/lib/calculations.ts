@@ -1,7 +1,8 @@
 /**
  * MOTOR DE CÁLCULO FINANCEIRO - RÁPIDO E SEGURO
- * Regra de Negócio: As taxas são valores acrescentados pelos serviços (ganho/comissão do serviço),
- * portanto as taxas SOMAM (acrescentam) ao resultado e NÃO subtraem.
+ * Regra de Negócio:
+ * Resultado Líquido = Vendas + Lucro Recarga AKI (+ Bónus AKI, se houver) − Total Saídas
+ * Os lucros dos outros canais (Afrivendas, ZAP, Unitel, Cartões, Chips) ficam fora do resultado líquido.
  */
 
 export interface ChannelInput {
@@ -26,6 +27,7 @@ export interface CalculationResult {
   soma_lucros_parciais: number;
   total_vendas_brutas: number;
   total_taxas_acrescentadas: number;
+  recarga_aki_lucro: number;
   lucro_do_aki_bonus: number;
   lucro_operacional: number;
   saidas: ExpenseInput[];
@@ -69,14 +71,15 @@ export function calculateTotalExpenses(expenses: ExpenseInput[]): number {
 
 /**
  * 4. Total Final do Dia (Resultado Líquido Real de Caixa):
- * total_final = soma_lucros_parciais (vendas + taxas acrescentadas) + bonusAki - total_saidas
+ * Regra: resultado liquido = vendas + recarga aki lucro (+ bonusAki se houver) - total_saidas
  */
 export function calculateFinalTotal(
-  somaLucrosParciais: number,
+  totalVendas: number,
+  recargaAkiLucro: number,
   totalSaidas: number,
   akiBonus: number = 0
 ): number {
-  const totalGanhos = (Number(somaLucrosParciais) || 0) + (Number(akiBonus) || 0);
+  const totalGanhos = (Number(totalVendas) || 0) + (Number(recargaAkiLucro) || 0) + (Number(akiBonus) || 0);
   const saidas = Number(totalSaidas) || 0;
   return totalGanhos - saidas;
 }
@@ -92,6 +95,7 @@ export function calculateDailyReport(
   let totalVendasBrutas = 0;
   let totalTaxas = 0;
   let somaLucrosParciais = 0;
+  let recargaAkiLucro = 0;
 
   const canaisProcessados: ChannelResult[] = channels.map((c) => {
     const valor = Number(c.valor_vendido) || 0;
@@ -101,6 +105,10 @@ export function calculateDailyReport(
     totalVendasBrutas += valor;
     totalTaxas += taxa;
     somaLucrosParciais += lucro;
+
+    if (c.canal === 'aki') {
+      recargaAkiLucro += taxa;
+    }
 
     return {
       canal: c.canal,
@@ -114,17 +122,18 @@ export function calculateDailyReport(
   const lucroOperacional = calculateOperationalProfit(somaLucrosParciais, bonusAki);
   const totalSaidas = calculateTotalExpenses(expenses);
   
-  // Total SEM bónus do Aki: (Vendas + Lucros das taxas) - Saídas
-  const totalFinalSemBonus = somaLucrosParciais - totalSaidas;
+  // Total SEM bónus do Aki: (Vendas + Recarga AKI Lucro) - Saídas
+  const totalFinalSemBonus = (totalVendasBrutas + recargaAkiLucro) - totalSaidas;
   
-  // Total COM bónus do Aki: (Vendas + Lucros das taxas + Bónus Aki) - Saídas
-  const totalFinal = calculateFinalTotal(somaLucrosParciais, totalSaidas, bonusAki);
+  // Total COM bónus do Aki: (Vendas + Recarga AKI Lucro + Bónus Aki) - Saídas
+  const totalFinal = calculateFinalTotal(totalVendasBrutas, recargaAkiLucro, totalSaidas, bonusAki);
 
   return {
     canais: canaisProcessados,
     soma_lucros_parciais: somaLucrosParciais,
     total_vendas_brutas: totalVendasBrutas,
     total_taxas_acrescentadas: totalTaxas,
+    recarga_aki_lucro: recargaAkiLucro,
     lucro_do_aki_bonus: bonusAki,
     lucro_operacional: lucroOperacional,
     saidas: expenses,

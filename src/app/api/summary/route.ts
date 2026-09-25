@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
       totalTaxas += (r.sales_entries || []).reduce((acc: number, entry: any) => acc + (Number(entry.taxa) || 0), 0);
       totalAkiBonus += b;
       totalSaidas += s;
-      totalLiquido += (l + b - s); // Vendas+Lucros+BónusAki - Saídas
+      totalLiquido += f; // Resultado Líquido oficial calculado (Vendas + Recarga Aki Lucro + Bónus Aki - Saídas)
 
       if (r.status === 'fechado') closedCount++;
 

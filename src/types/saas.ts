@@ -60,7 +60,10 @@ export interface DailyReport {
   // Campos calculados
   soma_lucros_parciais?: number;
   total_vendas_brutas?: number;
+  total_taxas_acrescentadas?: number;
+  recarga_aki_lucro?: number;
   lucro_operacional?: number;
   total_saidas?: number;
   total_final?: number;
+  total_final_sem_bonus?: number;
 }
