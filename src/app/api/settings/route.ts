@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // Configurações padrão — usadas como fallback se a BD não tiver entradas
 const DEFAULT_SETTINGS = {
   companyName: 'Rápido e Seguro — Gestão de Vendas',

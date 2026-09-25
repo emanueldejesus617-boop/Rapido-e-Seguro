@@ -3,6 +3,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { listReports } from '@/lib/reportsRepository';
 import { HistoryEntry } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser();

@@ -4,17 +4,20 @@ import { cookies } from 'next/headers';
 import { AuthUser } from '@/types';
 
 // 🔐 SEGURANÇA: Em produção, JWT_SECRET DEVE estar definido nas variáveis de ambiente.
-// Nunca utilize a chave de fallback em produção — é apenas para desenvolvimento local.
-if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
-  throw new Error(
-    '[auth.ts] ERRO CRÍTICO: JWT_SECRET não está definido nas variáveis de ambiente! ' +
-    'Defina JWT_SECRET antes de iniciar o servidor em produção.'
-  );
+// Validação realizada em tempo de execução para não quebrar o build do Next.js no Vercel.
+function getSecretKey(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        '[auth.ts] ERRO CRÍTICO: JWT_SECRET não está definido nas variáveis de ambiente! ' +
+        'Defina a variável JWT_SECRET no painel de configuração do Vercel.'
+      );
+    }
+    return new TextEncoder().encode('rapido_e_seguro_super_secret_jwt_key_2026_angola_finance');
+  }
+  return new TextEncoder().encode(secret);
 }
-
-const SECRET_KEY = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'rapido_e_seguro_super_secret_jwt_key_2026_angola_finance'
-);
 
 const COOKIE_NAME = 'rs_session_token';
 
@@ -46,12 +49,12 @@ export async function createSessionToken(user: {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(SECRET_KEY);
+    .sign(getSecretKey());
 }
 
 export async function verifySessionToken(token: string): Promise<AuthUser | null> {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY);
+    const { payload } = await jwtVerify(token, getSecretKey());
     return {
       id: payload.id as string,
       name: payload.name as string,

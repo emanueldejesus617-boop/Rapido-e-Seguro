@@ -3,6 +3,8 @@ import { getCurrentUser } from '@/lib/auth';
 import { listReports, saveDailyReport, getReportByDate } from '@/lib/reportsRepository';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const channelSchema = z.object({
   canal: z.enum(['aki', 'afrivendas', 'zap', 'unitel', 'cartoes', 'chips']),
   valor_vendido: z.number().min(0, 'Valor não pode ser negativo'),
