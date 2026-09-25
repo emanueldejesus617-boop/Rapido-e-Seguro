@@ -53,8 +53,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push('/');
-      router.refresh();
+      // Redirecionamento completo para garantir atualização dos cookies no browser
+      window.location.href = '/';
     } catch {
       setError('Erro de rede ao conectar com o servidor.');
       setLoading(false);
