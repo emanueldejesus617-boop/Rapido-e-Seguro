@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && node scripts/db-sync.js && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:seed": "node prisma/seed.js"
+    "prisma:seed": "node prisma/seed.js",
+    "db:migrate": "prisma db push && node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
