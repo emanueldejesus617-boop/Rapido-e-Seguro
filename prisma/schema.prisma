@@ -1,9 +1,8 @@
-// Configurado para SQLite em desenvolvimento local.
-// Para produção com PostgreSQL (Supabase): altere provider para "postgresql",
-// adicione directUrl = env("DIRECT_URL") e configure as variáveis no Vercel.
+// Configurado para PostgreSQL (Supabase) em produção no Vercel.
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 

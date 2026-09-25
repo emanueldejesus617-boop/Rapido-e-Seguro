@@ -54,8 +54,7 @@ export async function POST(request: NextRequest) {
     const hasDatabaseUrl = Boolean(
       process.env.DATABASE_URL &&
       (process.env.DATABASE_URL.startsWith('postgres://') ||
-       process.env.DATABASE_URL.startsWith('postgresql://') ||
-       process.env.DATABASE_URL.startsWith('file:'))
+       process.env.DATABASE_URL.startsWith('postgresql://'))
     );
 
     if (hasDatabaseUrl) {
@@ -138,7 +137,7 @@ export async function POST(request: NextRequest) {
       const token = await createSessionToken(authUser);
       await setSessionCookie(token);
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         message: 'Login realizado com sucesso',
         user: {
           id: user.id,
@@ -150,6 +149,17 @@ export async function POST(request: NextRequest) {
           isActive: true,
         },
       });
+
+      // Garantir cookie na resposta HTTP explicitamente
+      response.cookies.set('rs_session_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+      });
+
+      return response;
     }
 
     // 3. Fallback de Contingência / Demonstração (caso o banco não esteja configurado ou acessível)
@@ -170,7 +180,7 @@ export async function POST(request: NextRequest) {
       const token = await createSessionToken(fallbackUser);
       await setSessionCookie(token);
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         message: dbAvailable
           ? 'Login realizado com sucesso'
           : 'Login efetuado (Modo de Demonstração / DATABASE_URL pendente)',
@@ -187,6 +197,17 @@ export async function POST(request: NextRequest) {
           isActive: true,
         },
       });
+
+      // Garantir cookie na resposta HTTP explicitamente
+      response.cookies.set('rs_session_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+      });
+
+      return response;
     }
 
     // 4. Credenciais inválidas
