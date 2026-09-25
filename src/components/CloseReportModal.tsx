@@ -52,7 +52,7 @@ export function CloseReportModal({
             <span className="font-mono font-bold text-white">{formatKz(calculations.total_vendas_brutas)}</span>
           </div>
           <div className="flex justify-between text-slate-400">
-            <span>Lucro Recarga AKI (+):</span>
+            <span>Lucros (+):</span>
             <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</span>
           </div>
           {calculations.lucro_do_aki_bonus > 0 && (
