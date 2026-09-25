@@ -1,8 +1,7 @@
 /**
  * MOTOR DE CÁLCULO FINANCEIRO - RÁPIDO E SEGURO
  * Regra de Negócio:
- * Resultado Líquido = Vendas + Lucros (+ Bónus AKI, se houver) − Total Saídas
- * Onde Lucros é a soma de todos os lucros (taxas) de todos os canais de venda.
+ * Resultado Líquido = Vendas + Recarga AKI Lucro (+ Bónus AKI, se houver) − Total Saídas
  */
 
 export interface ChannelInput {
@@ -71,16 +70,15 @@ export function calculateTotalExpenses(expenses: ExpenseInput[]): number {
 
 /**
  * 4. Total Final do Dia (Resultado Líquido Real de Caixa):
- * Regra: resultado liquido = vendas + lucros (+ bonusAki se houver) - total_saidas
- * Onde lucros é a soma de todos os lucros (taxas) de todos os canais.
+ * Regra: resultado liquido = vendas + recarga aki lucro (+ bonusAki se houver) - total_saidas
  */
 export function calculateFinalTotal(
   totalVendas: number,
-  totalLucros: number,
+  recargaAkiLucro: number,
   totalSaidas: number,
   akiBonus: number = 0
 ): number {
-  const totalGanhos = (Number(totalVendas) || 0) + (Number(totalLucros) || 0) + (Number(akiBonus) || 0);
+  const totalGanhos = (Number(totalVendas) || 0) + (Number(recargaAkiLucro) || 0) + (Number(akiBonus) || 0);
   const saidas = Number(totalSaidas) || 0;
   return totalGanhos - saidas;
 }
@@ -123,11 +121,11 @@ export function calculateDailyReport(
   const lucroOperacional = calculateOperationalProfit(somaLucrosParciais, bonusAki);
   const totalSaidas = calculateTotalExpenses(expenses);
   
-  // Total SEM bónus do Aki: (Vendas + Soma de todos os Lucros) - Saídas
-  const totalFinalSemBonus = (totalVendasBrutas + totalTaxas) - totalSaidas;
+  // Total SEM bónus do Aki: (Vendas + Recarga AKI Lucro) - Saídas
+  const totalFinalSemBonus = (totalVendasBrutas + recargaAkiLucro) - totalSaidas;
   
-  // Total COM bónus do Aki: (Vendas + Soma de todos os Lucros + Bónus Aki) - Saídas
-  const totalFinal = calculateFinalTotal(totalVendasBrutas, totalTaxas, totalSaidas, bonusAki);
+  // Total COM bónus do Aki: (Vendas + Recarga AKI Lucro + Bónus Aki) - Saídas
+  const totalFinal = calculateFinalTotal(totalVendasBrutas, recargaAkiLucro, totalSaidas, bonusAki);
 
   return {
     canais: canaisProcessados,
