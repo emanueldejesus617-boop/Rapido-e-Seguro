@@ -1,0 +1,98 @@
+// Para migrar para PostgreSQL (Supabase), altere provider para "postgresql"
+// e configure DATABASE_URL com a connection string do Supabase (ver .env.example).
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL") // Necessário apenas para Supabase com pooler
+}
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Posto {
+  id        String        @id @default(uuid())
+  nome      String        @unique // "Posto 1", "Posto 2"
+  codigo    String        @unique // "posto-1", "posto-2"
+  createdAt DateTime      @default(now())
+  users     User[]
+  reports   DailyReport[]
+}
+
+model User {
+  id           String        @id @default(uuid())
+  nome         String
+  email        String        @unique
+  passwordHash String        @default("$2a$10$wE8wYlW0w2mD1x8/P8q0OuG5m0wFq9K0n1v2x3y4z5a6b7c8d9e0f")
+  papel        String        @default("vendedor") // "admin" | "vendedor"
+  postoId      String?       // null para Gerente (acesso a todos os postos)
+  posto        Posto?        @relation(fields: [postoId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reports      DailyReport[]
+
+  @@index([postoId])
+}
+
+model DailyReport {
+  id           String        @id @default(uuid())
+  data         String        // Formato YYYY-MM-DD (único por posto)
+  postoId      String        // Cada fecho pertence a um posto de venda específico
+  posto        Posto         @relation(fields: [postoId], references: [id], onDelete: Restrict)
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  status       String        @default("rascunho") // "rascunho" | "fechado"
+  observacoes  String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  salesEntries SalesEntry[]
+  akiBonus     AkiBonus?
+  expenses     Expense[]
+
+  @@unique([data, postoId])
+  @@index([data])
+  @@index([postoId])
+  @@index([userId])
+}
+
+model SalesEntry {
+  id           String      @id @default(uuid())
+  reportId     String
+  report       DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  canal        String      // "aki" | "afrivendas" | "zap" | "unitel" | "cartoes" | "chips"
+  valorVendido Float       @default(0)
+  taxa         Float       @default(0)
+  lucroParcial Float       @default(0)
+  createdAt    DateTime    @default(now())
+
+  @@unique([reportId, canal])
+  @@index([reportId])
+}
+
+model AkiBonus {
+  id        String      @id @default(uuid())
+  reportId  String      @unique
+  report    DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  valor     Float       @default(0)
+  createdAt DateTime    @default(now())
+}
+
+model Expense {
+  id        String      @id @default(uuid())
+  reportId  String
+  report    DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  categoria String      // "renda" | "saldo" | "taxi" | "outros"
+  descricao String
+  valor     Float       @default(0)
+  createdAt DateTime    @default(now())
+
+  @@index([reportId])
+}
+
+// Modelo para persistência das configurações da aplicação (chave-valor)
+model AppSettings {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
