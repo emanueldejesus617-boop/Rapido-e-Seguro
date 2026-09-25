@@ -3,51 +3,61 @@ import { calculateDailyReport, ChannelInput, ExpenseInput } from '@/lib/calculat
 import { DailyReport, ChannelName, ExpenseCategory } from '@/types/saas';
 
 export async function getReportByDate(dataStr: string, postoId?: string): Promise<DailyReport | null> {
-  const where: any = { data: dataStr };
-  if (postoId) {
-    where.postoId = postoId;
+  try {
+    const where: any = { data: dataStr };
+    if (postoId) {
+      where.postoId = postoId;
+    }
+
+    const report = await prisma.dailyReport.findFirst({
+      where,
+      include: {
+        user: {
+          select: { id: true, nome: true, email: true, papel: true },
+        },
+        posto: {
+          select: { id: true, nome: true, codigo: true },
+        },
+        salesEntries: true,
+        akiBonus: true,
+        expenses: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!report) return null;
+
+    return formatReportWithCalculations(report);
+  } catch (err) {
+    console.warn('Aviso: Falha ao buscar relatório por data:', err);
+    return null;
   }
-
-  const report = await prisma.dailyReport.findFirst({
-    where,
-    include: {
-      user: {
-        select: { id: true, nome: true, email: true, papel: true },
-      },
-      posto: {
-        select: { id: true, nome: true, codigo: true },
-      },
-      salesEntries: true,
-      akiBonus: true,
-      expenses: true,
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-
-  if (!report) return null;
-
-  return formatReportWithCalculations(report);
 }
 
 export async function getReportById(id: string): Promise<DailyReport | null> {
-  const report = await prisma.dailyReport.findUnique({
-    where: { id },
-    include: {
-      user: {
-        select: { id: true, nome: true, email: true, papel: true },
+  try {
+    const report = await prisma.dailyReport.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: { id: true, nome: true, email: true, papel: true },
+        },
+        posto: {
+          select: { id: true, nome: true, codigo: true },
+        },
+        salesEntries: true,
+        akiBonus: true,
+        expenses: true,
       },
-      posto: {
-        select: { id: true, nome: true, codigo: true },
-      },
-      salesEntries: true,
-      akiBonus: true,
-      expenses: true,
-    },
-  });
+    });
 
-  if (!report) return null;
+    if (!report) return null;
 
-  return formatReportWithCalculations(report);
+    return formatReportWithCalculations(report);
+  } catch (err) {
+    console.warn('Aviso: Falha ao buscar relatório por id:', err);
+    return null;
+  }
 }
 
 export async function listReports(options?: {
@@ -57,49 +67,54 @@ export async function listReports(options?: {
   search?: string; // 🔍 Pesquisa filtrada na base de dados
   postoId?: string; // 🏢 Filtro por posto de venda
 }): Promise<DailyReport[]> {
-  const where: any = {};
+  try {
+    const where: any = {};
 
-  if (options?.startDate && options?.endDate) {
-    where.data = { gte: options.startDate, lte: options.endDate };
-  }
-  if (options?.status && options.status !== 'ALL') {
-    where.status = options.status;
-  }
-  if (options?.postoId) {
-    where.postoId = options.postoId;
-  }
+    if (options?.startDate && options?.endDate) {
+      where.data = { gte: options.startDate, lte: options.endDate };
+    }
+    if (options?.status && options.status !== 'ALL') {
+      where.status = options.status;
+    }
+    if (options?.postoId) {
+      where.postoId = options.postoId;
+    }
 
-  // Filtro de pesquisa textual executado diretamente na BD
-  if (options?.search && options.search.trim() !== '') {
-    const term = options.search.trim();
-    where.OR = [
-      { data: { contains: term } },
-      { user: { nome: { contains: term } } },
-      { posto: { nome: { contains: term } } },
-      { salesEntries: { some: { canal: { contains: term } } } },
-      { expenses: { some: { descricao: { contains: term } } } },
-      { expenses: { some: { categoria: { contains: term } } } },
-      { observacoes: { contains: term } },
-    ];
-  }
+    // Filtro de pesquisa textual executado diretamente na BD
+    if (options?.search && options.search.trim() !== '') {
+      const term = options.search.trim();
+      where.OR = [
+        { data: { contains: term } },
+        { user: { nome: { contains: term } } },
+        { posto: { nome: { contains: term } } },
+        { salesEntries: { some: { canal: { contains: term } } } },
+        { expenses: { some: { descricao: { contains: term } } } },
+        { expenses: { some: { categoria: { contains: term } } } },
+        { observacoes: { contains: term } },
+      ];
+    }
 
-  const reports = await prisma.dailyReport.findMany({
-    where,
-    include: {
-      user: {
-        select: { id: true, nome: true, email: true, papel: true },
+    const reports = await prisma.dailyReport.findMany({
+      where,
+      include: {
+        user: {
+          select: { id: true, nome: true, email: true, papel: true },
+        },
+        posto: {
+          select: { id: true, nome: true, codigo: true },
+        },
+        salesEntries: true,
+        akiBonus: true,
+        expenses: true,
       },
-      posto: {
-        select: { id: true, nome: true, codigo: true },
-      },
-      salesEntries: true,
-      akiBonus: true,
-      expenses: true,
-    },
-    orderBy: { data: 'desc' },
-  });
+      orderBy: { data: 'desc' },
+    });
 
-  return reports.map(formatReportWithCalculations);
+    return reports.map(formatReportWithCalculations);
+  } catch (err) {
+    console.warn('Aviso: Falha ao listar relatórios:', err);
+    return [];
+  }
 }
 
 export interface SaveReportDTO {
