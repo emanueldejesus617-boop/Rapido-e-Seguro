@@ -543,7 +543,7 @@ export function ReportForm({
           <div className="text-[10px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-2 pt-1">
             <span>Vendas: <strong className="text-emerald-400">{formatKz(calculations.total_vendas_brutas)}</strong></span>
             <span>•</span>
-            <span>Lucros: <strong className="text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</strong></span>
+            <span>Lucros: <strong className="text-emerald-300">+{formatKz(calculations.total_taxas_acrescentadas)}</strong></span>
             <span>•</span>
             {calculations.lucro_do_aki_bonus > 0 && (
               <>

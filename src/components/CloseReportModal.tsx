@@ -53,7 +53,7 @@ export function CloseReportModal({
           </div>
           <div className="flex justify-between text-slate-400">
             <span>Lucros (+):</span>
-            <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</span>
+            <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.total_taxas_acrescentadas)}</span>
           </div>
           {calculations.lucro_do_aki_bonus > 0 && (
             <div className="flex justify-between text-slate-400">
