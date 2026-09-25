@@ -1,9 +1,9 @@
-// Para migrar para PostgreSQL (Supabase), altere provider para "postgresql"
-// e configure DATABASE_URL com a connection string do Supabase (ver .env.example).
+// Configurado para PostgreSQL (Supabase) em produção.
+// Para desenvolvimento local com SQLite, altere provider para "sqlite" e DATABASE_URL para "file:./dev.db"
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL") // Necessário apenas para Supabase com pooler
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 
