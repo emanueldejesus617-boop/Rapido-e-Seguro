@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
     const hasDatabaseUrl = Boolean(
       process.env.DATABASE_URL &&
       (process.env.DATABASE_URL.startsWith('postgres://') ||
-       process.env.DATABASE_URL.startsWith('postgresql://'))
+       process.env.DATABASE_URL.startsWith('postgresql://') ||
+       process.env.DATABASE_URL.startsWith('file:'))
     );
 
     if (hasDatabaseUrl) {

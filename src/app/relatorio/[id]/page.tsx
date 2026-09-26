@@ -19,6 +19,7 @@ import {
   Layers,
   ShieldCheck,
   Menu,
+  Pencil,
 } from 'lucide-react';
 import { formatKz, formatDatePt } from '@/lib/utils';
 import { AuthUser, DailyReport } from '@/types';
@@ -141,6 +142,16 @@ function ReportDetailContent() {
           </div>
 
           <div className="flex items-center gap-2">
+            {(report.status === 'rascunho' || user?.role === 'admin') && (
+              <Link
+                href={`/?view=novo&data=${report.data}&postoId=${report.postoId || ''}`}
+                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3.5 sm:px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-slate-700 hover:text-white transition active:scale-95"
+              >
+                <Pencil size={14} />
+                <span>{report.status === 'rascunho' ? 'Continuar Rascunho' : 'Editar Relatório'}</span>
+              </Link>
+            )}
+
             <button
               onClick={handlePrint}
               className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-950/50 hover:bg-emerald-500 transition active:scale-95"

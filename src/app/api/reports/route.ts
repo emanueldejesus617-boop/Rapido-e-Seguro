@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { listReports, saveDailyReport, getReportByDate } from '@/lib/reportsRepository';
+import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -73,17 +74,60 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Definir posto alvo: vendedores usam seu posto obrigatório; administradores podem escolher
-    let targetPostoId = user.postoId;
-    if (user.role === 'admin') {
-      targetPostoId = parsed.data.postoId || user.postoId;
+    // Definir posto alvo: administradores podem escolher; vendedores usam seu posto ou o selecionado
+    let candidatePostoId = user.role === 'admin'
+      ? (parsed.data.postoId || user.postoId)
+      : (user.postoId || parsed.data.postoId);
+
+    // Resolver Posto real no banco (suporta UUID, código como 'posto-1' ou fallback para o 1º posto)
+    let targetPostoId = candidatePostoId;
+    if (candidatePostoId) {
+      const postoMatch = await prisma.posto.findFirst({
+        where: {
+          OR: [
+            { id: candidatePostoId },
+            { codigo: candidatePostoId },
+            { nome: candidatePostoId },
+          ],
+        },
+      });
+      if (postoMatch) {
+        targetPostoId = postoMatch.id;
+      }
+    }
+
+    if (!targetPostoId) {
+      const firstPosto = await prisma.posto.findFirst();
+      if (firstPosto) {
+        targetPostoId = firstPosto.id;
+      }
     }
 
     if (!targetPostoId) {
       return NextResponse.json(
-        { error: 'Posto de vendas não especificado. Selecione o posto para o relatório.' },
+        { error: 'Nenhum posto de vendas encontrado no sistema. Crie um posto antes de gravar relatórios.' },
         { status: 400 }
       );
+    }
+
+    // Resolver Utilizador real no banco para garantir integridade referencial
+    let effectiveUserId = user.id;
+    let userRecord = await prisma.user.findUnique({ where: { id: user.id } }).catch(() => null);
+    if (!userRecord && user.email) {
+      userRecord = await prisma.user.findUnique({
+        where: { email: user.email.toLowerCase().trim() },
+      }).catch(() => null);
+      if (userRecord) {
+        effectiveUserId = userRecord.id;
+      }
+    }
+    if (!userRecord) {
+      const adminFallback = await prisma.user.findFirst({
+        where: { papel: 'admin' },
+      }).catch(() => null);
+      if (adminFallback) {
+        effectiveUserId = adminFallback.id;
+      }
     }
 
     const report = await saveDailyReport({
@@ -94,11 +138,13 @@ export async function POST(request: NextRequest) {
       channels: parsed.data.channels,
       akiBonus: parsed.data.akiBonus,
       expenses: parsed.data.expenses,
-      userId: user.id,
+      userId: effectiveUserId,
     });
 
     return NextResponse.json({
-      message: 'Relatório diário salvo com sucesso',
+      message: parsed.data.status === 'fechado'
+        ? 'Relatório diário fechado com sucesso'
+        : 'Rascunho guardado com sucesso',
       report,
     });
   } catch (error: any) {

@@ -103,6 +103,17 @@ function DashboardContent() {
   };
 
   useEffect(() => {
+    const urlData = searchParams.get('data');
+    const urlPostoId = searchParams.get('postoId');
+    if (urlData) {
+      setActiveReportDate(urlData);
+    }
+    if (urlPostoId) {
+      setActiveReportPostoId(urlPostoId);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     fetchAuthAndPostos();
   }, []);
 

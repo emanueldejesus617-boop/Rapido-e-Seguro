@@ -155,7 +155,7 @@ export function ReportForm({
 
       const targetPostoId = user?.role === 'admin'
         ? (activeReportPostoId || postos[0]?.id)
-        : user?.postoId;
+        : (user?.postoId || activeReportPostoId || postos[0]?.id);
 
       const payload = {
         data: activeReportDate,
@@ -198,7 +198,9 @@ export function ReportForm({
 
       setFeedback({
         type: 'success',
-        message: statusToSet === 'fechado' ? 'Relatório diário fechado com sucesso!' : 'Relatório diário salvo com sucesso!',
+        message: statusToSet === 'fechado'
+          ? 'Relatório diário fechado com sucesso!'
+          : 'Rascunho guardado com sucesso! Pode continuar a editar a qualquer momento.',
       });
       onSaved(data.report);
       setCloseConfirmOpen(false);

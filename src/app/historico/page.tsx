@@ -19,6 +19,7 @@ import {
   CheckCircle2,
   Menu,
   Zap,
+  Pencil,
 } from 'lucide-react';
 import { formatKz, formatDatePt, getTodayDateString } from '@/lib/utils';
 import { AuthUser, DailyReport } from '@/types';
@@ -288,9 +289,20 @@ function HistoricoContent() {
                       <td className="py-4 px-3 text-slate-300">{r.user?.nome || 'Operador'}</td>
                       <td className="py-4 px-3 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          {(r.status === 'rascunho' || user?.role === 'admin') && (
+                            <Link
+                              href={`/?view=novo&data=${r.data}&postoId=${r.postoId || ''}`}
+                              className="flex items-center gap-1 rounded-lg bg-emerald-950/60 border border-emerald-700/50 px-2.5 py-1.5 text-emerald-300 hover:bg-emerald-800 hover:text-white transition text-xs font-semibold"
+                              title={r.status === 'rascunho' ? "Continuar preenchimento deste rascunho" : "Editar relatório"}
+                            >
+                              <Pencil size={12} />
+                              <span>{r.status === 'rascunho' ? 'Editar' : 'Editar'}</span>
+                            </Link>
+                          )}
+
                           <Link
                             href={`/relatorio/${r.id}`}
-                            className="flex items-center gap-1 rounded-lg bg-slate-800 px-2.5 py-1.5 text-slate-200 hover:bg-slate-700 hover:text-white transition"
+                            className="flex items-center gap-1 rounded-lg bg-slate-800 px-2.5 py-1.5 text-slate-200 hover:bg-slate-700 hover:text-white transition text-xs"
                           >
                             <FileText size={13} className="text-emerald-400" />
                             <span>PDF</span>
