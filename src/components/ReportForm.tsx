@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Calendar,
   Save,
@@ -80,6 +81,7 @@ export function ReportForm({
 
   const isClosed = activeReport?.status === 'fechado' && user?.role !== 'admin';
   const isReportFechado = activeReport?.status === 'fechado';
+  const router = useRouter();
 
   // Preencher form com os dados do relatório existente
   useEffect(() => {
@@ -205,14 +207,17 @@ export function ReportForm({
       if (!res.ok) throw new Error(data?.error || 'Falha ao salvar relatório');
 
       setCloseConfirmOpen(false);
-      setFeedback({
-        type: 'success',
-        message: statusToSet === 'fechado'
-          ? 'Relatório diário fechado com sucesso!'
-          : 'Rascunho guardado com sucesso! Pode continuar a editar a qualquer momento.',
-      });
       if (data?.report) {
         onSaved(data.report);
+      }
+      if (statusToSet === 'fechado') {
+        // Redirecionar automaticamente para o painel geral após fechar
+        router.push('/?view=dashboard');
+      } else {
+        setFeedback({
+          type: 'success',
+          message: 'Rascunho guardado com sucesso! Pode continuar a editar a qualquer momento.',
+        });
       }
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'Erro inesperado' });
