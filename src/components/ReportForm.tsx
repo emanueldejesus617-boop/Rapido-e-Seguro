@@ -193,8 +193,16 @@ export function ReportForm({
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Falha ao salvar relatório');
+      let data: any = null;
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const textErr = await res.text();
+        if (!res.ok) throw new Error(textErr || `Erro de servidor (${res.status})`);
+      }
+
+      if (!res.ok) throw new Error(data?.error || 'Falha ao salvar relatório');
 
       setFeedback({
         type: 'success',
