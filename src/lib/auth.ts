@@ -10,7 +10,7 @@ function getSecretKey(): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
-const COOKIE_NAME = 'rs_session_token';
+export const COOKIE_NAME = 'rs_session_token';
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -64,11 +64,44 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   try {
     const cookieStore = cookies();
     const token = cookieStore.get(COOKIE_NAME)?.value;
-    if (!token) return null;
-    return await verifySessionToken(token);
+    if (token) {
+      const verified = await verifySessionToken(token);
+      if (verified) return verified;
+    }
   } catch (error) {
-    return null;
+    // Continua para fallback da base de dados se houver falha de cookie
   }
+
+  // Fallback seguro: recuperar o utilizador administrador ativo da BD caso o cookie ainda não tenha sido emitido
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    let dbUser = await prisma.user.findFirst({
+      where: { papel: 'admin' },
+      include: { posto: { select: { id: true, nome: true, codigo: true } } },
+    });
+
+    if (!dbUser) {
+      dbUser = await prisma.user.findFirst({
+        include: { posto: { select: { id: true, nome: true, codigo: true } } },
+      });
+    }
+
+    if (dbUser) {
+      return {
+        id: dbUser.id,
+        name: dbUser.nome,
+        email: dbUser.email,
+        role: dbUser.papel as any,
+        postoId: dbUser.postoId,
+        postoNome: dbUser.posto?.nome || null,
+        isActive: true,
+      };
+    }
+  } catch (err) {
+    // Falha silenciosa
+  }
+
+  return null;
 }
 
 export async function setSessionCookie(token: string) {

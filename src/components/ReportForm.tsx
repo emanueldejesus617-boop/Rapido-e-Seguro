@@ -204,14 +204,16 @@ export function ReportForm({
 
       if (!res.ok) throw new Error(data?.error || 'Falha ao salvar relatório');
 
+      setCloseConfirmOpen(false);
       setFeedback({
         type: 'success',
         message: statusToSet === 'fechado'
           ? 'Relatório diário fechado com sucesso!'
           : 'Rascunho guardado com sucesso! Pode continuar a editar a qualquer momento.',
       });
-      onSaved(data.report);
-      setCloseConfirmOpen(false);
+      if (data?.report) {
+        onSaved(data.report);
+      }
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'Erro inesperado' });
     } finally {
@@ -589,7 +591,10 @@ export function ReportForm({
               <button
                 type="button"
                 disabled={saving}
-                onClick={() => setCloseConfirmOpen(true)}
+                onClick={() => {
+                  setFeedback(null);
+                  setCloseConfirmOpen(true);
+                }}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-500 hover:to-emerald-400 transition active:scale-95 disabled:opacity-60"
               >
                 <Lock size={15} />
@@ -608,6 +613,7 @@ export function ReportForm({
         saving={saving}
         calculations={calculations}
         activeReportDate={activeReportDate}
+        error={feedback?.type === 'error' ? feedback.message : null}
       />
     </div>
   );

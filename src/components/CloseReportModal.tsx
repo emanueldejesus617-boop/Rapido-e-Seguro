@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Lock, X } from 'lucide-react';
+import { Lock, X, AlertCircle, Loader2 } from 'lucide-react';
 import { formatKz, formatDatePt } from '@/lib/utils';
 import { CalculationResult } from '@/lib/calculations';
 
@@ -12,6 +12,7 @@ interface CloseReportModalProps {
   saving: boolean;
   calculations: CalculationResult;
   activeReportDate: string;
+  error?: string | null;
 }
 
 export function CloseReportModal({
@@ -21,11 +22,12 @@ export function CloseReportModal({
   saving,
   calculations,
   activeReportDate,
+  error,
 }: CloseReportModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="max-w-md w-full rounded-2xl sm:rounded-3xl border border-emerald-800/80 bg-[#0c1322] p-5 sm:p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -45,6 +47,16 @@ export function CloseReportModal({
             <X size={16} />
           </button>
         </div>
+
+        {error && (
+          <div className="rounded-xl border border-rose-500/50 bg-rose-950/70 p-3.5 text-xs text-rose-200 flex items-start gap-2.5 shadow-inner">
+            <AlertCircle size={17} className="text-rose-400 shrink-0 mt-0.5" />
+            <div className="flex-1 space-y-0.5">
+              <span className="font-bold text-rose-100">Não foi possível fechar o relatório:</span>
+              <p className="text-rose-300 leading-relaxed">{error}</p>
+            </div>
+          </div>
+        )}
 
         <div className="rounded-2xl border border-slate-800 bg-[#070b14] p-4 space-y-2 text-xs">
           <div className="flex justify-between text-slate-400">
@@ -77,17 +89,27 @@ export function CloseReportModal({
 
         <div className="flex items-center justify-end gap-3 pt-2">
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition"
+            disabled={saving}
+            className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg hover:bg-emerald-500 transition disabled:opacity-60"
+            className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg hover:bg-emerald-500 transition disabled:opacity-60 flex items-center gap-2"
           >
-            {saving ? 'A fechar...' : 'Confirmar & Fechar'}
+            {saving ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span>A fechar...</span>
+              </>
+            ) : (
+              <span>Confirmar & Fechar</span>
+            )}
           </button>
         </div>
       </div>

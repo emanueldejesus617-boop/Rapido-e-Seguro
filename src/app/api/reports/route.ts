@@ -141,12 +141,35 @@ export async function POST(request: NextRequest) {
       userId: effectiveUserId,
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       message: parsed.data.status === 'fechado'
         ? 'Relatório diário fechado com sucesso'
         : 'Rascunho guardado com sucesso',
       report,
     });
+
+    try {
+      const { createSessionToken, COOKIE_NAME } = await import('@/lib/auth');
+      const token = await createSessionToken({
+        id: effectiveUserId,
+        nome: user.name,
+        email: user.email,
+        papel: user.role,
+        postoId: targetPostoId,
+        postoNome: user.postoNome,
+      });
+      response.cookies.set(COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+      });
+    } catch {
+      // Ignorar erro ao emitir cookie
+    }
+
+    return response;
   } catch (error: any) {
     console.error('Erro ao salvar relatório diário:', error);
     return NextResponse.json(

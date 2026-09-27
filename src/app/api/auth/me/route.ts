@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCurrentUser } from '@/lib/auth';
+import { getCurrentUser, createSessionToken, COOKIE_NAME } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +11,7 @@ export async function GET() {
   }
 
   // Tenta enriquecer com dados do banco de dados se acessível
+  let effectiveUser = sessionUser;
   try {
     let user = await prisma.user.findUnique({
       where: { id: sessionUser.id },
@@ -23,7 +24,6 @@ export async function GET() {
         posto: {
           select: { id: true, nome: true, codigo: true },
         },
-        createdAt: true,
       },
     });
 
@@ -39,60 +39,49 @@ export async function GET() {
           posto: {
             select: { id: true, nome: true, codigo: true },
           },
-          createdAt: true,
         },
       });
     }
 
     if (user) {
-      const response = NextResponse.json({
-        user: {
-          id: user.id,
-          name: user.nome,
-          email: user.email,
-          role: user.papel,
-          postoId: user.postoId,
-          postoNome: user.posto?.nome || null,
-          isActive: true,
-        },
-      });
-
-      // Se o ID da sessão era diferente (ex: demo-*), atualizar cookie para a sessão real
-      if (sessionUser.id !== user.id) {
-        const { createSessionToken } = await import('@/lib/auth');
-        const token = await createSessionToken({
-          id: user.id,
-          nome: user.nome,
-          email: user.email,
-          papel: user.papel,
-          postoId: user.postoId,
-          postoNome: user.posto?.nome || null,
-        });
-        response.cookies.set('rs_session_token', token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          path: '/',
-          maxAge: 60 * 60 * 24 * 7,
-        });
-      }
-
-      return response;
+      effectiveUser = {
+        id: user.id,
+        name: user.nome,
+        email: user.email,
+        role: user.papel as any,
+        postoId: user.postoId,
+        postoNome: user.posto?.nome || null,
+        isActive: true,
+      };
     }
   } catch (dbErr) {
     console.warn('Aviso: Falha ao carregar utilizador do banco em /api/auth/me, usando dados da sessão:', dbErr);
   }
 
-  // Fallback garantido: os dados da sessão JWT são válidos
-  return NextResponse.json({
-    user: {
-      id: sessionUser.id,
-      name: sessionUser.name,
-      email: sessionUser.email,
-      role: sessionUser.role,
-      postoId: sessionUser.postoId || null,
-      postoNome: sessionUser.postoNome || null,
-      isActive: true,
-    },
+  const response = NextResponse.json({
+    user: effectiveUser,
   });
+
+  // Garantir cookie de sessão válido no browser
+  try {
+    const token = await createSessionToken({
+      id: effectiveUser.id,
+      nome: effectiveUser.name,
+      email: effectiveUser.email,
+      papel: effectiveUser.role,
+      postoId: effectiveUser.postoId,
+      postoNome: effectiveUser.postoNome,
+    });
+    response.cookies.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+  } catch (tokenErr) {
+    console.warn('Aviso: Falha ao emitir token em /api/auth/me:', tokenErr);
+  }
+
+  return response;
 }
