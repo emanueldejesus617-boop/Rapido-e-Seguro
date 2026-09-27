@@ -36,6 +36,8 @@ function HistoricoContent() {
   const [endDate, setEndDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; report: DailyReport } | null>(null);
+  const [clearAllModal, setClearAllModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const fetchAuth = async () => {
@@ -79,7 +81,7 @@ function HistoricoContent() {
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
     setFeedback({ type, message });
-    setTimeout(() => setFeedback(null), 4000);
+    setTimeout(() => setFeedback(null), 5000);
   };
 
   const handleFilter = (e: React.FormEvent) => {
@@ -90,11 +92,17 @@ function HistoricoContent() {
   const handleDelete = async () => {
     if (!deleteModal) return;
     try {
+      setDeleting(true);
       const res = await fetch(`/api/reports/${deleteModal.report.id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
-        showFeedback('success', 'Rascunho eliminado com sucesso!');
+        showFeedback(
+          'success',
+          deleteModal.report.status === 'fechado'
+            ? 'Relatório diário eliminado com sucesso do histórico!'
+            : 'Rascunho eliminado com sucesso!'
+        );
         setDeleteModal(null);
         loadReports();
       } else {
@@ -102,7 +110,31 @@ function HistoricoContent() {
         showFeedback('error', err.error || 'Erro ao eliminar relatório.');
       }
     } catch {
-      showFeedback('error', 'Erro de conexão.');
+      showFeedback('error', 'Erro de conexão ao eliminar relatório.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      setDeleting(true);
+      const res = await fetch('/api/reports?all=true', {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        showFeedback('success', data.message || 'Todo o histórico de relatórios foi eliminado com sucesso!');
+        setClearAllModal(false);
+        loadReports();
+      } else {
+        const err = await res.json();
+        showFeedback('error', err.error || 'Erro ao limpar histórico.');
+      }
+    } catch {
+      showFeedback('error', 'Erro de conexão ao limpar histórico.');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -138,6 +170,17 @@ function HistoricoContent() {
 
         <div className="flex items-center gap-2">
           <HeaderInstallButton />
+          {user?.role === 'admin' && reports.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setClearAllModal(true)}
+              className="p-2 rounded-xl bg-rose-950/50 border border-rose-800/60 text-rose-300 hover:bg-rose-900 transition"
+              title="Limpar Todo o Histórico (Admin)"
+              aria-label="Limpar Histórico"
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
           <Link
             href="/?view=novo"
             className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow-md active:scale-95 transition hover:bg-emerald-500"
@@ -163,6 +206,17 @@ function HistoricoContent() {
 
             <div className="flex items-center gap-3">
               <HeaderInstallButton />
+              {user?.role === 'admin' && reports.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setClearAllModal(true)}
+                  className="flex items-center gap-1.5 rounded-xl border border-rose-800/60 bg-rose-950/40 px-3.5 py-2 text-xs font-bold text-rose-300 hover:bg-rose-900/60 hover:text-white transition shadow-sm active:scale-95"
+                  title="Apagar todo o histórico de relatórios (Exclusivo Administrador)"
+                >
+                  <Trash2 size={14} className="text-rose-400" />
+                  <span>Limpar Histórico</span>
+                </button>
+              )}
               <Link
                 href="/?view=novo"
                 className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 shadow-md shadow-emerald-950/40 transition"
@@ -308,11 +362,15 @@ function HistoricoContent() {
                             <span>PDF</span>
                           </Link>
 
-                          {r.status === 'rascunho' && (
+                          {(r.status === 'rascunho' || user?.role === 'admin') && (
                             <button
                               onClick={() => setDeleteModal({ isOpen: true, report: r })}
-                              className="p-1.5 text-slate-500 hover:text-rose-400 transition"
-                              title="Eliminar rascunho"
+                              className={`p-1.5 transition rounded-lg ${
+                                r.status === 'fechado'
+                                  ? 'text-slate-500 hover:text-rose-400 hover:bg-rose-950/40'
+                                  : 'text-slate-500 hover:text-rose-400 hover:bg-slate-800'
+                              }`}
+                              title={r.status === 'fechado' ? "Eliminar este relatório fechado (Admin)" : "Eliminar rascunho"}
                             >
                               <Trash2 size={15} />
                             </button>
@@ -334,29 +392,112 @@ function HistoricoContent() {
           </div>
         </div>
 
-        {/* Delete Modal */}
+        {/* Delete Individual Report Modal */}
         {deleteModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-2xl border border-slate-800 bg-[#0d1424] p-6 shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="w-full max-w-sm rounded-2xl sm:rounded-3xl border border-rose-900/60 bg-[#0d1424] p-5 sm:p-6 shadow-2xl space-y-4">
               <div className="flex items-center gap-3 text-rose-400">
-                <AlertCircle size={24} />
-                <h4 className="text-base font-bold text-white">Eliminar Rascunho</h4>
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                  <Trash2 size={20} />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-white">
+                    {deleteModal.report.status === 'fechado' ? 'Eliminar Relatório Fechado' : 'Eliminar Rascunho'}
+                  </h4>
+                  <p className="text-xs text-slate-400">{formatDatePt(deleteModal.report.data)}</p>
+                </div>
               </div>
-              <p className="mt-3 text-xs text-slate-300 leading-relaxed">
-                Tem a certeza que deseja eliminar o rascunho do dia <strong>{formatDatePt(deleteModal.report.data)}</strong>?
+
+              <div className="rounded-xl border border-slate-800 bg-[#070b14] p-3 text-xs space-y-1.5 text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Posto:</span>
+                  <span className="font-semibold text-white">{deleteModal.report.posto?.nome || 'Posto'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Total Vendas:</span>
+                  <span className="font-mono text-emerald-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Estado:</span>
+                  <span className={deleteModal.report.status === 'fechado' ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+                    {deleteModal.report.status === 'fechado' ? 'Fechado / Definitivo' : 'Rascunho'}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-xs text-rose-300/90 leading-relaxed bg-rose-950/40 border border-rose-800/40 p-3 rounded-xl">
+                {deleteModal.report.status === 'fechado'
+                  ? 'Atenção Administrador: Esta ação removerá definitivamente este relatório e todos os seus lançamentos contábeis da base de dados.'
+                  : 'Tem a certeza que deseja eliminar este rascunho? Esta ação não pode ser desfeita.'}
               </p>
-              <div className="mt-6 flex justify-end gap-3 text-xs font-semibold">
+
+              <div className="flex justify-end gap-3 text-xs font-semibold pt-2">
                 <button
+                  type="button"
+                  disabled={deleting}
                   onClick={() => setDeleteModal(null)}
-                  className="rounded-xl bg-slate-800 px-4 py-2 text-slate-300 hover:bg-slate-700 transition"
+                  className="rounded-xl bg-slate-800 px-4 py-2.5 text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
                 >
                   Cancelar
                 </button>
                 <button
+                  type="button"
+                  disabled={deleting}
                   onClick={handleDelete}
-                  className="rounded-xl bg-rose-600 px-4 py-2 text-white hover:bg-rose-500 transition"
+                  className="rounded-xl bg-rose-600 px-5 py-2.5 text-white hover:bg-rose-500 transition shadow-lg shadow-rose-950/60 disabled:opacity-60 flex items-center gap-1.5"
                 >
-                  Eliminar
+                  <Trash2 size={13} />
+                  <span>{deleting ? 'A eliminar...' : 'Confirmar Eliminação'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Clear All History Modal for Admin */}
+        {clearAllModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="w-full max-w-md rounded-2xl sm:rounded-3xl border border-rose-800 bg-[#0d1424] p-5 sm:p-6 shadow-2xl space-y-4">
+              <div className="flex items-center gap-3 text-rose-400">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                  <AlertCircle size={22} />
+                </div>
+                <div>
+                  <h4 className="text-base font-bold text-white">Limpar Todo o Histórico?</h4>
+                  <p className="text-xs text-rose-300">Ação Exclusiva de Administrador</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-rose-900/60 bg-rose-950/50 p-4 text-xs text-rose-200 leading-relaxed space-y-2">
+                <p className="font-bold text-rose-100">⚠️ Esta operação irá apagar permanentemente:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Todos os relatórios diários (fechados e rascunhos)</li>
+                  <li>Todos os lançamentos de vendas por canal (AKI, Afrivendas, ZAP, etc.)</li>
+                  <li>Todas as saídas e despesas registadas</li>
+                  <li>Todos os bónus de recargas</li>
+                </ul>
+                <p className="text-slate-400 pt-1 text-[11px]">
+                  Os utilizadores, credenciais e postos de venda serão mantidos intactos.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3 text-xs font-semibold pt-2">
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={() => setClearAllModal(false)}
+                  className="rounded-xl bg-slate-800 px-4 py-2.5 text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  disabled={deleting}
+                  onClick={handleClearAll}
+                  className="rounded-xl bg-rose-600 px-5 py-2.5 text-white hover:bg-rose-500 transition shadow-lg shadow-rose-950/60 disabled:opacity-60 flex items-center gap-1.5"
+                >
+                  <Trash2 size={13} />
+                  <span>{deleting ? 'A limpar...' : 'Sim, Apagar Todo o Histórico'}</span>
                 </button>
               </div>
             </div>

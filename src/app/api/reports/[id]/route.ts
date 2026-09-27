@@ -54,7 +54,8 @@ export async function DELETE(
     const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
 
-    await deleteReport(params.id);
+    const isAdmin = user.role === 'admin';
+    await deleteReport(params.id, isAdmin);
     return NextResponse.json({ message: 'Relatório eliminado com sucesso' });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Erro ao eliminar relatório' }, { status: 400 });

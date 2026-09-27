@@ -279,12 +279,39 @@ export async function closeReport(id: string): Promise<DailyReport> {
   return formatReportWithCalculations(updated);
 }
 
-export async function deleteReport(id: string): Promise<void> {
+export async function deleteReport(id: string, isAdmin: boolean = false): Promise<void> {
   const existing = await prisma.dailyReport.findUnique({ where: { id } });
-  if (existing?.status === 'fechado') {
-    throw new Error('Não é permitido eliminar um relatório que já foi fechado.');
+  if (!existing) {
+    throw new Error('Relatório não encontrado.');
   }
-  await prisma.dailyReport.delete({ where: { id } });
+
+  if (existing.status === 'fechado' && !isAdmin) {
+    throw new Error('Não é permitido eliminar um relatório que já foi fechado. Apenas o Administrador pode realizar esta operação.');
+  }
+
+  await prisma.$transaction([
+    prisma.salesEntry.deleteMany({ where: { reportId: id } }),
+    prisma.akiBonus.deleteMany({ where: { reportId: id } }),
+    prisma.expense.deleteMany({ where: { reportId: id } }),
+    prisma.dailyReport.delete({ where: { id } }),
+  ]);
+}
+
+export async function clearAllReports(isAdmin: boolean = false): Promise<{ count: number }> {
+  if (!isAdmin) {
+    throw new Error('Apenas o Administrador tem permissão para apagar todo o histórico de relatórios.');
+  }
+
+  const count = await prisma.dailyReport.count();
+
+  await prisma.$transaction([
+    prisma.salesEntry.deleteMany({}),
+    prisma.akiBonus.deleteMany({}),
+    prisma.expense.deleteMany({}),
+    prisma.dailyReport.deleteMany({}),
+  ]);
+
+  return { count };
 }
 
 function formatReportWithCalculations(report: any): DailyReport {

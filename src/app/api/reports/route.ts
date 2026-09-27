@@ -178,3 +178,37 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
+
+    if (user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Apenas o Administrador tem permissão para apagar o histórico de relatórios.' },
+        { status: 403 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const clearAll = searchParams.get('all') === 'true';
+
+    if (clearAll) {
+      const { clearAllReports } = await import('@/lib/reportsRepository');
+      const result = await clearAllReports(true);
+      return NextResponse.json({
+        message: `Histórico apagado com sucesso. ${result.count} relatórios eliminados.`,
+        count: result.count,
+      });
+    }
+
+    return NextResponse.json({ error: 'Parâmetro de eliminação inválido' }, { status: 400 });
+  } catch (error: any) {
+    console.error('Erro ao apagar histórico:', error);
+    return NextResponse.json(
+      { error: error.message || 'Erro ao processar eliminação de histórico' },
+      { status: 500 }
+    );
+  }
+}

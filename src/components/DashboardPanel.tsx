@@ -20,6 +20,7 @@ import {
   Store,
   Layers,
   ShieldCheck,
+  Trash2,
 } from 'lucide-react';
 import { formatKz, formatDatePt } from '@/lib/utils';
 import { FinancialCharts } from '@/components/FinancialCharts';
@@ -36,6 +37,7 @@ interface DashboardPanelProps {
   currentPeriod: string;
   onChangePeriod: (period: string) => void;
   onOpenReport: (date: string, postoId?: string) => void;
+  onDeleteReport?: (report: DailyReport) => void;
 }
 
 const PERIOD_TABS = [
@@ -57,6 +59,7 @@ export function DashboardPanel({
   currentPeriod,
   onChangePeriod,
   onOpenReport,
+  onDeleteReport,
 }: DashboardPanelProps) {
   const netResult = summaryData?.netResult || 0;
   const isGerente = user?.role === 'admin';
@@ -369,6 +372,16 @@ export function DashboardPanel({
                         >
                           <Printer size={14} />
                         </Link>
+                        {isGerente && onDeleteReport && (
+                          <button
+                            type="button"
+                            onClick={() => onDeleteReport(rep)}
+                            title="Eliminar este relatório (Admin)"
+                            className="rounded-xl border border-slate-700 bg-slate-800 p-2 text-rose-400 hover:bg-rose-600 hover:text-white transition"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

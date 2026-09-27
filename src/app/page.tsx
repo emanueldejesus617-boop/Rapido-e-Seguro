@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Sidebar } from '@/components/Sidebar';
 import { ReportForm } from '@/components/ReportForm';
 import { DashboardPanel } from '@/components/DashboardPanel';
-import { Menu, Zap, Plus, ArrowLeft } from 'lucide-react';
+import { Menu, Zap, Plus, ArrowLeft, Trash2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { getTodayDateString } from '@/lib/utils';
+import { getTodayDateString, formatDatePt, formatKz } from '@/lib/utils';
 import { AuthUser, DailyReport, FinancialSummary, Posto } from '@/types';
 import { HeaderInstallButton } from '@/components/InstallPwaButton';
 
@@ -36,6 +36,9 @@ function DashboardContent() {
   const [timelineData, setTimelineData] = useState<any[]>([]);
   const [periodReports, setPeriodReports] = useState<DailyReport[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModal, setDeleteModal] = useState<{ report: DailyReport } | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [dashFeedback, setDashFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // 1. Auth Check & Postos
   const fetchAuthAndPostos = async () => {
@@ -144,6 +147,29 @@ function DashboardContent() {
     loadPeriodData(currentPeriod, selectedPostoId);
   };
 
+  const handleDeleteFromDashboard = async () => {
+    if (!deleteModal) return;
+    try {
+      setDeleting(true);
+      const res = await fetch(`/api/reports/${deleteModal.report.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setDeleteModal(null);
+        setDashFeedback({ type: 'success', message: 'Relatório eliminado com sucesso!' });
+        setTimeout(() => setDashFeedback(null), 5000);
+        loadPeriodData(currentPeriod, selectedPostoId);
+      } else {
+        const err = await res.json();
+        setDashFeedback({ type: 'error', message: err.error || 'Erro ao eliminar relatório.' });
+        setTimeout(() => setDashFeedback(null), 5000);
+      }
+    } catch {
+      setDashFeedback({ type: 'error', message: 'Erro de conexão.' });
+      setTimeout(() => setDashFeedback(null), 5000);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 pl-0 lg:pl-64 font-sans selection:bg-emerald-500 selection:text-white transition-all">
       <Sidebar
@@ -206,20 +232,80 @@ function DashboardContent() {
             onSaved={handleReportSaved}
           />
         ) : (
-          <DashboardPanel
-            user={user}
-            postos={postos}
-            selectedPostoId={selectedPostoId}
-            onChangePosto={setSelectedPostoId}
-            summaryData={summaryData}
-            timelineData={timelineData}
-            periodReports={periodReports}
-            currentPeriod={currentPeriod}
-            onChangePeriod={handleChangePeriod}
-            onOpenReport={handleOpenReport}
-          />
+          <>
+            {dashFeedback && (
+              <div className={`flex items-center gap-2.5 rounded-xl p-3.5 text-xs font-semibold ${
+                dashFeedback.type === 'success'
+                  ? 'border border-emerald-800 bg-emerald-950/80 text-emerald-300'
+                  : 'border border-rose-800 bg-rose-950/80 text-rose-300'
+              }`}>
+                {dashFeedback.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                <span>{dashFeedback.message}</span>
+              </div>
+            )}
+            <DashboardPanel
+              user={user}
+              postos={postos}
+              selectedPostoId={selectedPostoId}
+              onChangePosto={setSelectedPostoId}
+              summaryData={summaryData}
+              timelineData={timelineData}
+              periodReports={periodReports}
+              currentPeriod={currentPeriod}
+              onChangePeriod={handleChangePeriod}
+              onOpenReport={handleOpenReport}
+              onDeleteReport={user?.role === 'admin' ? (rep) => setDeleteModal({ report: rep }) : undefined}
+            />
+          </>
         )}
       </main>
+
+      {/* Delete Confirmation Modal (Dashboard) */}
+      {deleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-rose-900/60 bg-[#0d1424] p-5 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                <Trash2 size={20} />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white">
+                  {deleteModal.report.status === 'fechado' ? 'Eliminar Relatório Fechado' : 'Eliminar Rascunho'}
+                </h4>
+                <p className="text-xs text-slate-400">{formatDatePt(deleteModal.report.data)} — {deleteModal.report.posto?.nome || 'Posto'}</p>
+              </div>
+            </div>
+            <div className="rounded-xl border border-slate-800 bg-[#070b14] p-3 text-xs flex justify-between">
+              <span className="text-slate-400">Total Vendas:</span>
+              <span className="font-mono text-emerald-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
+            </div>
+            <p className="text-xs text-rose-300/90 leading-relaxed bg-rose-950/40 border border-rose-800/40 p-3 rounded-xl">
+              {deleteModal.report.status === 'fechado'
+                ? 'Este relatório fechado será apagado permanentemente da base de dados.'
+                : 'Este rascunho será apagado permanentemente. Esta ação não pode ser desfeita.'}
+            </p>
+            <div className="flex justify-end gap-3 text-xs font-semibold">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => setDeleteModal(null)}
+                className="rounded-xl bg-slate-800 px-4 py-2.5 text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={handleDeleteFromDashboard}
+                className="rounded-xl bg-rose-600 px-4 py-2.5 text-white hover:bg-rose-500 transition disabled:opacity-60 flex items-center gap-1.5"
+              >
+                <Trash2 size={13} />
+                <span>{deleting ? 'A eliminar...' : 'Confirmar'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
