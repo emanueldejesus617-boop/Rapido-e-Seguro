@@ -12,7 +12,7 @@ export async function GET() {
     }
 
     try {
-      const postos = await prisma.posto.findMany({
+      let postos = await prisma.posto.findMany({
         orderBy: { nome: 'asc' },
         select: {
           id: true,
@@ -20,6 +20,28 @@ export async function GET() {
           codigo: true,
         },
       });
+
+      if (!postos || postos.length === 0) {
+        await prisma.posto.upsert({
+          where: { codigo: 'posto-1' },
+          update: { nome: 'Posto 1' },
+          create: { id: 'posto-1', nome: 'Posto 1', codigo: 'posto-1' },
+        });
+        await prisma.posto.upsert({
+          where: { codigo: 'posto-2' },
+          update: { nome: 'Posto 2' },
+          create: { id: 'posto-2', nome: 'Posto 2', codigo: 'posto-2' },
+        });
+
+        postos = await prisma.posto.findMany({
+          orderBy: { nome: 'asc' },
+          select: {
+            id: true,
+            nome: true,
+            codigo: true,
+          },
+        });
+      }
 
       if (postos && postos.length > 0) {
         return NextResponse.json({ postos });

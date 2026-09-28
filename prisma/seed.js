@@ -17,13 +17,13 @@ async function main() {
   const posto1 = await prisma.posto.upsert({
     where: { codigo: 'posto-1' },
     update: { nome: 'Posto 1' },
-    create: { nome: 'Posto 1', codigo: 'posto-1' },
+    create: { id: 'posto-1', nome: 'Posto 1', codigo: 'posto-1' },
   });
 
   const posto2 = await prisma.posto.upsert({
     where: { codigo: 'posto-2' },
     update: { nome: 'Posto 2' },
-    create: { nome: 'Posto 2', codigo: 'posto-2' },
+    create: { id: 'posto-2', nome: 'Posto 2', codigo: 'posto-2' },
   });
 
   console.log('Postos registados:', {
@@ -43,11 +43,32 @@ async function main() {
       passwordHash: cristovaoPass,
     },
     create: {
+      id: 'user-admin-cristovao',
       nome: 'Cristovão',
       email: 'cristovao@rapidoeseguro.ao',
       papel: 'admin',
       postoId: null, // Acesso a todos os postos (Gerente)
       passwordHash: cristovaoPass,
+    },
+  });
+
+  // 3. Criar vendedor balcão inicial associado ao Posto 1
+  const vendedorPass = await bcrypt.hash('vendedor123', 10);
+  await prisma.user.upsert({
+    where: { email: 'vendedor@rapidoeseguro.ao' },
+    update: {
+      nome: 'Vendedor Balcão',
+      papel: 'vendedor',
+      postoId: posto1.id,
+      passwordHash: vendedorPass,
+    },
+    create: {
+      id: 'user-vendedor-balcao',
+      nome: 'Vendedor Balcão',
+      email: 'vendedor@rapidoeseguro.ao',
+      papel: 'vendedor',
+      postoId: posto1.id,
+      passwordHash: vendedorPass,
     },
   });
 

@@ -14,6 +14,14 @@ function syncDatabase() {
     try {
       execSync('npx prisma db push --skip-generate', { stdio: 'inherit' });
       console.log('✅ Schema sincronizado com a base de dados com sucesso.');
+
+      try {
+        console.log('🌱 Assegurando postos e dados padrão no Supabase...');
+        execSync('node prisma/seed.js', { stdio: 'inherit' });
+        console.log('✅ Dados padrão (seed) garantidos no Supabase.');
+      } catch (seedError) {
+        console.warn('⚠️ Aviso ao executar seed no Supabase:', seedError.message);
+      }
     } catch (error) {
       console.warn('⚠️ Aviso: prisma db push não pôde ser concluído durante o build:', error.message);
     }

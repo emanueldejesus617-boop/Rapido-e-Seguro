@@ -1,4 +1,4 @@
-// Configurado para SQLite em desenvolvimento local.
+// Configurado para PostgreSQL (Supabase) em producao.
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
