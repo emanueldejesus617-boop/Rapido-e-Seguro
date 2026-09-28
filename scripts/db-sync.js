@@ -3,10 +3,50 @@
  * Executa "prisma db push" apenas se DATABASE_URL e DIRECT_URL estiverem configurados.
  * Se não estiverem, pula a etapa sem quebrar o build.
  */
+const fs = require('fs');
+const path = require('path');
 const { execSync } = require('child_process');
 
+const DEFAULT_DB_URL = 'postgresql://postgres:1XlZkpwKuvGAOyZQ@db.zqcpcpbntayqkerwvieu.supabase.co:5432/postgres';
+
+function loadEnv() {
+  const envFiles = ['.env.production', '.env'];
+  for (const file of envFiles) {
+    const envPath = path.join(__dirname, '..', file);
+    if (fs.existsSync(envPath)) {
+      const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) continue;
+        const eqIdx = trimmed.indexOf('=');
+        if (eqIdx > 0) {
+          const key = trimmed.slice(0, eqIdx).trim();
+          let val = trimmed.slice(eqIdx + 1).trim();
+          if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+            val = val.slice(1, -1);
+          }
+          if (!process.env[key]) {
+            process.env[key] = val;
+          }
+        }
+      }
+    }
+  }
+
+  const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV);
+  if (isVercel || !process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL || process.env.DATABASE_URL.startsWith('file:')) {
+      process.env.DATABASE_URL = DEFAULT_DB_URL;
+    }
+  }
+  if (!process.env.DIRECT_URL) {
+    process.env.DIRECT_URL = DEFAULT_DB_URL;
+  }
+}
+
 function syncDatabase() {
-  const hasDbUrl = Boolean(process.env.DATABASE_URL);
+  loadEnv();
+  const hasDbUrl = Boolean(process.env.DATABASE_URL && !process.env.DATABASE_URL.startsWith('file:'));
   const hasDirectUrl = Boolean(process.env.DIRECT_URL);
 
   if (hasDbUrl && hasDirectUrl) {
