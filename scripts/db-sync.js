@@ -7,7 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const DEFAULT_DB_URL = 'postgresql://postgres:1XlZkpwKuvGAOyZQ@db.zqcpcpbntayqkerwvieu.supabase.co:5432/postgres';
+const DEFAULT_DB_URL = 'postgresql://postgres.zqcpcpbntayqkerwvieu:1XlZkpwKuvGAOyZQ@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true';
+const DEFAULT_DIRECT_URL = 'postgresql://postgres.zqcpcpbntayqkerwvieu:1XlZkpwKuvGAOyZQ@aws-1-eu-west-1.pooler.supabase.com:5432/postgres';
 
 function loadEnv() {
   const envFiles = ['.env.production', '.env'];

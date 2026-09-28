@@ -1,12 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
-const DEFAULT_DB_URL = 'postgresql://postgres:1XlZkpwKuvGAOyZQ@db.zqcpcpbntayqkerwvieu.supabase.co:5432/postgres';
+const DEFAULT_DB_URL = 'postgresql://postgres.zqcpcpbntayqkerwvieu:1XlZkpwKuvGAOyZQ@aws-1-eu-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true';
+const DEFAULT_DIRECT_URL = 'postgresql://postgres.zqcpcpbntayqkerwvieu:1XlZkpwKuvGAOyZQ@aws-1-eu-west-1.pooler.supabase.com:5432/postgres';
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = DEFAULT_DB_URL;
 }
 if (!process.env.DIRECT_URL) {
-  process.env.DIRECT_URL = DEFAULT_DB_URL;
+  process.env.DIRECT_URL = DEFAULT_DIRECT_URL;
 }
 
 const globalForPrisma = globalThis as unknown as {
