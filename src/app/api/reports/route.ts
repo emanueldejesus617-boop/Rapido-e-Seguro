@@ -172,6 +172,15 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error: any) {
     console.error('Erro ao salvar relatório diário:', error);
+    const msg = error.message || '';
+    if (msg.includes('DATABASE_URL') || msg.includes('Environment variable not found') || !process.env.DATABASE_URL) {
+      return NextResponse.json(
+        {
+          error: 'A base de dados Supabase não está conectada na Vercel. Por favor, adicione a variável DATABASE_URL (e DIRECT_URL) nas Environment Variables do projeto na Vercel e faça um novo deploy.',
+        },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
       { error: error.message || 'Erro ao processar relatório diário' },
       { status: 400 }

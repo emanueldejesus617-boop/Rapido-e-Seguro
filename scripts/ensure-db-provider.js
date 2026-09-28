@@ -32,8 +32,9 @@ function loadEnv() {
 function ensureDbProvider() {
   loadEnv();
 
+  const isVercel = Boolean(process.env.VERCEL || process.env.VERCEL_ENV || process.env.NEXT_PUBLIC_VERCEL_ENV);
   const dbUrl = process.env.DATABASE_URL || '';
-  const isPostgres = dbUrl.startsWith('postgres://') || dbUrl.startsWith('postgresql://');
+  const isPostgres = isVercel || dbUrl.startsWith('postgres://') || dbUrl.startsWith('postgresql://');
   const targetProvider = isPostgres ? 'postgresql' : 'sqlite';
 
   const schemaPath = path.join(__dirname, '..', 'prisma', 'schema.prisma');
