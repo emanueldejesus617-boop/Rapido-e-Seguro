@@ -100,6 +100,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       isTab: false,
       color: 'slate',
     },
+    {
+      id: 'relatorio-mensal',
+      label: 'Histórico Mensal',
+      href: '/relatorio-mensal',
+      icon: CalendarDays,
+      description: 'Arquivo de todos os meses',
+      isTab: false,
+      color: 'slate',
+    },
   ];
 
   return (
@@ -173,6 +182,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               if (pathname === '/historico') {
                 isActive = item.href === '/historico';
+              } else if (pathname === '/relatorio-mensal') {
+                isActive = item.id === 'relatorio-mensal';
               } else if (pathname === '/') {
                 if (item.id === 'novo') {
                   isActive = currentView === 'novo';

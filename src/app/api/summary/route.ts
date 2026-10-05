@@ -44,9 +44,11 @@ export async function GET(request: NextRequest) {
       endDate = yestStr;
       periodLabel = 'Ontem';
     } else if (period === 'this_week' || period === 'weekly') {
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      const startOfWeek = new Date(now.setDate(diff));
+      // Usar cópia de `now` para não mutar o objeto original
+      const weekBase = new Date(now);
+      const day = weekBase.getDay();
+      const diff = weekBase.getDate() - day + (day === 0 ? -6 : 1);
+      const startOfWeek = new Date(weekBase.setDate(diff));
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 6);
 
@@ -54,8 +56,10 @@ export async function GET(request: NextRequest) {
       endDate = formatDate(endOfWeek);
       periodLabel = 'Esta Semana';
     } else if (period === 'this_month' || period === 'monthly') {
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      // Usar instância fresca para garantir que `now` não foi mutado pela lógica da semana
+      const monthBase = new Date();
+      const startOfMonth = new Date(monthBase.getFullYear(), monthBase.getMonth(), 1);
+      const endOfMonth = new Date(monthBase.getFullYear(), monthBase.getMonth() + 1, 0);
 
       startDate = formatDate(startOfMonth);
       endDate = formatDate(endOfMonth);

@@ -115,3 +115,16 @@ export interface HistoryEntry {
   postoId?: string;
   status: ReportStatus;
 }
+
+export interface MonthlyReport {
+  yearMonth: string;       // ex: '2026-10'
+  label: string;          // ex: 'Outubro 2026'
+  totalVendas: number;
+  totalLucro: number;
+  totalBonus: number;
+  totalSaidas: number;
+  resultadoLiquido: number;
+  reportCount: number;
+  closedCount: number;
+  postos: string[];       // nomes dos postos com dados nesse mês
+}

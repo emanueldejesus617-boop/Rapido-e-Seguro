@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Sidebar } from '@/components/Sidebar';
 import {
   History as HistoryIcon,
@@ -28,13 +28,14 @@ import { HeaderInstallButton } from '@/components/InstallPwaButton';
 
 function HistoricoContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [reports, setReports] = useState<DailyReport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [startDate, setStartDate] = useState(searchParams.get('startDate') || '');
+  const [endDate, setEndDate] = useState(searchParams.get('endDate') || '');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'ALL');
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; report: DailyReport } | null>(null);
   const [clearAllModal, setClearAllModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
