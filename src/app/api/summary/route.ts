@@ -116,12 +116,14 @@ export async function GET(request: NextRequest) {
         : (r.total_saidas || 0);
       const f = r.total_final || 0;
 
+      const repTaxas = r.total_taxas_acrescentadas ?? (r.sales_entries || []).reduce((acc: number, entry: any) => acc + (Number(entry.taxa) || 0), 0);
+
       totalVendas += v;
-      totalLucroBruto += l;
-      totalTaxas += (r.sales_entries || []).reduce((acc: number, entry: any) => acc + (Number(entry.taxa) || 0), 0);
+      totalLucroBruto += repTaxas + b;
+      totalTaxas += repTaxas;
       totalAkiBonus += b;
       totalSaidas += s;
-      totalLiquido += f; // Resultado Líquido oficial calculado (Vendas + Recarga Aki Lucro + Bónus Aki - Saídas)
+      totalLiquido += f; // Resultado Líquido oficial (Vendas + Taxas + Bónus Aki - Saídas)
 
       if (r.status === 'fechado') closedCount++;
 
@@ -133,7 +135,7 @@ export async function GET(request: NextRequest) {
       return {
         date: r.data,
         vendas: v,
-        lucroBruto: l,
+        lucroBruto: repTaxas,
         bonusAki: b,
         saidas: s,
         resultadoLiquido: f,

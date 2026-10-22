@@ -69,6 +69,7 @@ export interface DailyReport {
   total_vendas_brutas?: number;
   total_taxas_acrescentadas?: number;
   recarga_aki_lucro?: number;
+  zap_lucro?: number;
   lucro_operacional?: number;
   total_saidas?: number;
   total_final?: number;

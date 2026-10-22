@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       const entry = monthMap.get(ym)!;
 
       const vendas = rep.total_vendas_brutas || 0;
-      const lucro = rep.soma_lucros_parciais || 0;
+      const lucro = rep.total_taxas_acrescentadas || 0;
       const bonus = rep.aki_bonus?.valor || 0;
       const saidas = rep.total_saidas || 0;
       const liquido = rep.total_final || 0;

@@ -55,13 +55,17 @@ function HistoricoContent() {
     }
   };
 
-  const loadReports = async () => {
+  const loadReports = async (overrideStart?: string, overrideEnd?: string, overrideStatus?: string) => {
     try {
       setLoading(true);
       const query = new URLSearchParams();
-      if (startDate) query.append('startDate', startDate);
-      if (endDate) query.append('endDate', endDate);
-      if (statusFilter !== 'ALL') query.append('status', statusFilter);
+      const sDate = overrideStart !== undefined ? overrideStart : startDate;
+      const eDate = overrideEnd !== undefined ? overrideEnd : endDate;
+      const stat = overrideStatus !== undefined ? overrideStatus : statusFilter;
+
+      if (sDate) query.append('startDate', sDate);
+      if (eDate) query.append('endDate', eDate);
+      if (stat && stat !== 'ALL') query.append('status', stat);
 
       const res = await fetch(`/api/reports?${query.toString()}`);
       if (res.ok) {
@@ -77,8 +81,18 @@ function HistoricoContent() {
 
   useEffect(() => {
     fetchAuth();
-    loadReports();
   }, []);
+
+  useEffect(() => {
+    const urlStart = searchParams.get('startDate') || '';
+    const urlEnd = searchParams.get('endDate') || '';
+    const urlStatus = searchParams.get('status') || 'ALL';
+    setStartDate(urlStart);
+    setEndDate(urlEnd);
+    setStatusFilter(urlStatus);
+    loadReports(urlStart, urlEnd, urlStatus);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
     setFeedback({ type, message });
@@ -333,7 +347,7 @@ function HistoricoContent() {
                         {formatKz(r.total_vendas_brutas)}
                       </td>
                       <td className="py-4 px-3 font-mono text-emerald-300 font-semibold">
-                        {formatKz(r.soma_lucros_parciais)}
+                        {formatKz(r.total_taxas_acrescentadas || 0)}
                       </td>
                       <td className="py-4 px-3 font-mono text-rose-300 font-semibold">
                         {formatKz(r.total_saidas)}

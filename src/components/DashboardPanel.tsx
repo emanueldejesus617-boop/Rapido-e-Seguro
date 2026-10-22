@@ -345,7 +345,7 @@ export function DashboardPanel({
                       {formatKz(rep.total_vendas_brutas || 0)}
                     </td>
                     <td className="py-3.5 px-3 sm:px-4 text-right font-mono text-emerald-300 font-bold">
-                      {formatKz(rep.soma_lucros_parciais || 0)}
+                      {formatKz(rep.total_taxas_acrescentadas || 0)}
                     </td>
                     <td className="py-3.5 px-3 sm:px-4 text-right font-mono text-yellow-400 font-bold">
                       {rep.aki_bonus?.valor ? `+${formatKz(rep.aki_bonus.valor)}` : <span className="text-slate-600">—</span>}

@@ -1,7 +1,7 @@
 /**
  * MOTOR DE CÁLCULO FINANCEIRO - RÁPIDO E SEGURO
  * Regra de Negócio:
- * Resultado Líquido = Vendas + Recarga AKI Lucro + ZAP Directo Lucro (+ Bónus AKI, se houver) − Total Saídas
+ * Resultado Líquido = Vendas Brutas + Total Lucros (Taxas de todos os canais) (+ Bónus AKI, se houver) − Total Saídas
  */
 
 export interface ChannelInput {
@@ -38,31 +38,31 @@ export interface CalculationResult {
 
 /**
  * 1. Lucro Parcial / Total Arrecadado por canal:
- * As taxas são valores ACRESCENTADOS pelo serviço.
+ * As taxas são valores ACRESCENTADOS pelo serviço (ganho/comissão do serviço).
  * lucro_parcial = valor_vendido + taxa
  */
 export function calculateChannelProfit(valorVendido: number, taxa: number = 0): number {
   const v = Number(valorVendido) || 0;
   const t = Number(taxa) || 0;
-  return v + t; // Taxa é acrescentada, não subtraída
+  return v + t; // Taxa é acrescentada, somando ao total arrecadado
 }
 
 /**
  * 2. Lucro Operacional do Dia:
- * soma de todos os ganhos (vendas + taxas acrescentadas) + bónus
+ * Soma dos lucros de todos os canais (+ taxas acrescentadas) + bónus
  */
 export function calculateOperationalProfit(
-  somaLucrosParciais: number,
+  totalTaxas: number,
   akiBonus: number = 0
 ): number {
-  const lucros = Number(somaLucrosParciais) || 0;
+  const taxas = Number(totalTaxas) || 0;
   const bonus = Number(akiBonus) || 0;
-  return lucros + bonus;
+  return taxas + bonus;
 }
 
 /**
  * 3. Saídas do dia:
- * total_saidas = soma de todas as despesas
+ * total_saidas = soma de todas as despesas operacionais
  */
 export function calculateTotalExpenses(expenses: ExpenseInput[]): number {
   if (!Array.isArray(expenses)) return 0;
@@ -71,18 +71,17 @@ export function calculateTotalExpenses(expenses: ExpenseInput[]): number {
 
 /**
  * 4. Total Final do Dia (Resultado Líquido Real de Caixa):
- * Regra: resultado liquido = vendas + recarga aki lucro + zap directo lucro (+ bonusAki se houver) - total_saidas
+ * Regra Oficial: Resultado Líquido = Vendas Brutas + Total Taxas (lucros de todos os canais) + Bónus AKI − Total Saídas
  */
 export function calculateFinalTotal(
   totalVendas: number,
-  recargaAkiLucro: number,
-  zapLucro: number,
+  totalTaxas: number,
   totalSaidas: number,
   akiBonus: number = 0
 ): number {
-  const totalGanhos = (Number(totalVendas) || 0) + (Number(recargaAkiLucro) || 0) + (Number(zapLucro) || 0) + (Number(akiBonus) || 0);
+  const ganhos = (Number(totalVendas) || 0) + (Number(totalTaxas) || 0) + (Number(akiBonus) || 0);
   const saidas = Number(totalSaidas) || 0;
-  return totalGanhos - saidas;
+  return ganhos - saidas;
 }
 
 /**
@@ -102,7 +101,7 @@ export function calculateDailyReport(
   const canaisProcessados: ChannelResult[] = channels.map((c) => {
     const valor = Number(c.valor_vendido) || 0;
     const taxa = Number(c.taxa) || 0;
-    const lucro = calculateChannelProfit(valor, taxa); // soma: valor + taxa
+    const lucro = calculateChannelProfit(valor, taxa); // soma: valor + taxa (total arrecadado)
 
     totalVendasBrutas += valor;
     totalTaxas += taxa;
@@ -124,14 +123,14 @@ export function calculateDailyReport(
   });
 
   const bonusAki = Number(akiBonus) || 0;
-  const lucroOperacional = calculateOperationalProfit(somaLucrosParciais, bonusAki);
+  const lucroOperacional = calculateOperationalProfit(totalTaxas, bonusAki);
   const totalSaidas = calculateTotalExpenses(expenses);
   
-  // Total SEM bónus do Aki: (Vendas + Recarga AKI Lucro + ZAP Lucro) - Saídas
-  const totalFinalSemBonus = (totalVendasBrutas + recargaAkiLucro + zapLucro) - totalSaidas;
-  
-  // Total COM bónus do Aki: (Vendas + Recarga AKI Lucro + ZAP Lucro + Bónus Aki) - Saídas
-  const totalFinal = calculateFinalTotal(totalVendasBrutas, recargaAkiLucro, zapLucro, totalSaidas, bonusAki);
+  // Resultado Líquido SEM bónus: (Vendas + Todas as Taxas) - Saídas
+  const totalFinalSemBonus = calculateFinalTotal(totalVendasBrutas, totalTaxas, totalSaidas, 0);
+
+  // Resultado Líquido COM bónus: (Vendas + Todas as Taxas + Bónus AKI) - Saídas
+  const totalFinal = calculateFinalTotal(totalVendasBrutas, totalTaxas, totalSaidas, bonusAki);
 
   return {
     canais: canaisProcessados,

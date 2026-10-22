@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
             time: '23:59',
             type: 'VENDA',
             title: `Venda - ${s.canal.toUpperCase()}`,
-            description: `Valor Vendido: ${s.valor_vendido} Kz | Taxa: ${s.taxa} Kz | Lucro: ${s.lucro_parcial} Kz`,
+            description: `Valor Facial: ${s.valor_vendido} Kz | Lucro (+Taxa): ${s.taxa} Kz | Total Arrecadado: ${s.lucro_parcial} Kz`,
             amount: s.valor_vendido,
             category: s.canal,
             operatorName: rep.user?.nome || 'Operador',

@@ -246,11 +246,13 @@ function ReportDetailContent() {
                     ))}
 
                     <tr className="border-t-2 border-slate-700 bg-slate-900/50 font-bold print:border-slate-400 print:bg-slate-100">
-                      <td className="p-3 text-white print:text-black">SUBTOTAL LUCROS PARCIAIS</td>
+                      <td className="p-3 text-white print:text-black">SUBTOTAL ARRECADADO</td>
                       <td className="p-3 font-mono text-white print:text-black">
                         {formatKz(report.total_vendas_brutas)}
                       </td>
-                      <td className="p-3 font-mono text-emerald-400 print:text-emerald-700">—</td>
+                      <td className="p-3 font-mono text-emerald-400 print:text-emerald-700">
+                        +{formatKz(report.total_taxas_acrescentadas || 0)}
+                      </td>
                       <td className="p-3 font-mono text-emerald-400 print:text-emerald-800 text-right">
                         {formatKz(report.soma_lucros_parciais)}
                       </td>
