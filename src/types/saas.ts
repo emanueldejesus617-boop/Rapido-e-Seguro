@@ -68,3 +68,35 @@ export interface DailyReport {
   total_final?: number;
   total_final_sem_bonus?: number;
 }
+
+export interface MonthlyChannelMetric {
+  canal: ChannelName;
+  nome: string;
+  totalVendido: number;
+  totalTaxa: number;
+  totalArrecadado: number;
+  participacaoVendas: number;
+  operacoesCount: number;
+}
+
+export interface MonthlyExpenseMetric {
+  categoria: ExpenseCategory;
+  nome: string;
+  total: number;
+  participacaoSaidas: number;
+}
+
+export interface MonthlyReport {
+  yearMonth: string;
+  label: string;
+  totalVendas: number;
+  totalLucro: number;
+  totalBonus: number;
+  totalSaidas: number;
+  resultadoLiquido: number;
+  reportCount: number;
+  closedCount: number;
+  postos: string[];
+  channels?: MonthlyChannelMetric[];
+  expensesByCategory?: MonthlyExpenseMetric[];
+}

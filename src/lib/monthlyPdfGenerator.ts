@@ -169,11 +169,190 @@ export function createMonthlyReportPdfDoc({
 
   currentY += 21;
 
-  // ─── 5. TABELA DE RELATÓRIOS DIÁRIOS ───
+  // ─── 5. TABELA DE MÉTRICAS POR CANAL DE VENDA NO MÊS ───
+  const ALL_CHANNELS_LIST: { id: any; nome: string }[] = [
+    { id: 'aki', nome: 'AKI' },
+    { id: 'afrivendas', nome: 'Afrivendas' },
+    { id: 'zap', nome: 'ZAP' },
+    { id: 'unitel', nome: 'Unitel' },
+    { id: 'cartoes', nome: 'Cartões' },
+    { id: 'chips', nome: 'Chips' },
+  ];
+
+  const channelMetrics = month.channels && month.channels.length > 0
+    ? month.channels
+    : ALL_CHANNELS_LIST.map((ch) => {
+        let totalVendido = 0;
+        let totalTaxa = 0;
+        let count = 0;
+        for (const rep of reports) {
+          if (rep.sales_entries) {
+            for (const s of rep.sales_entries) {
+              if (s.canal === ch.id) {
+                totalVendido += s.valor_vendido || 0;
+                totalTaxa += s.taxa || 0;
+                if ((s.valor_vendido || 0) > 0 || (s.taxa || 0) > 0) count++;
+              }
+            }
+          }
+        }
+        const totalArrecadado = totalVendido + totalTaxa;
+        const participacaoVendas = month.totalVendas > 0 ? (totalVendido / month.totalVendas) * 100 : 0;
+        return {
+          canal: ch.id,
+          nome: ch.nome,
+          totalVendido,
+          totalTaxa,
+          totalArrecadado,
+          participacaoVendas,
+          operacoesCount: count,
+        };
+      });
+
   doc.setFontSize(9.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(15, 23, 42);
-  doc.text('DETALHAMENTO DIÁRIO DOS FECHOS E MOVIMENTAÇÕES', margin, currentY);
+  doc.text('1. MÉTRICAS CONSOLIDADAS POR CANAL DE VENDA NO MÊS', margin, currentY);
+
+  currentY += 2;
+
+  const channelTableBody = channelMetrics.map((ch) => [
+    ch.nome,
+    formatKz(ch.totalVendido),
+    formatKz(ch.totalTaxa),
+    formatKz(ch.totalArrecadado),
+    `${ch.participacaoVendas.toFixed(1)}%`,
+    `${ch.operacoesCount} fechos`,
+  ]);
+
+  autoTable(doc, {
+    startY: currentY,
+    head: [['Canal de Venda', 'Vendas Brutas (Kz)', 'Taxa / Lucro (Kz)', 'Total Arrecadado (Kz)', 'Participação (%)', 'Fechos com Venda']],
+    body: channelTableBody,
+    foot: [[
+      'SUBTOTAL CANAIS',
+      formatKz(month.totalVendas),
+      formatKz(month.totalLucro),
+      formatKz(month.totalVendas + month.totalLucro),
+      '100.0%',
+      `${month.reportCount} fechos`,
+    ]],
+    theme: 'grid',
+    headStyles: {
+      fillColor: [15, 23, 42],
+      textColor: [255, 255, 255],
+      fontSize: 7.5,
+      fontStyle: 'bold',
+      halign: 'center',
+    },
+    footStyles: {
+      fillColor: [241, 245, 249],
+      textColor: [15, 23, 42],
+      fontSize: 7.5,
+      fontStyle: 'bold',
+    },
+    styles: { fontSize: 7, cellPadding: 2, textColor: [30, 41, 59] },
+    columnStyles: {
+      0: { cellWidth: 32, fontStyle: 'bold' },
+      1: { halign: 'right' },
+      2: { halign: 'right' },
+      3: { halign: 'right', fontStyle: 'bold' },
+      4: { halign: 'center', cellWidth: 26 },
+      5: { halign: 'center', cellWidth: 26 },
+    },
+    margin: { left: margin, right: margin },
+  });
+
+  // @ts-expect-error jspdf-autotable injection
+  currentY = (doc.lastAutoTable?.finalY || currentY + 35) + 6;
+
+  // ─── 6. TABELA DE DISTRIBUIÇÃO DE SAÍDAS POR CATEGORIA ───
+  const ALL_EXPENSES_LIST: { id: any; nome: string }[] = [
+    { id: 'renda', nome: 'Renda' },
+    { id: 'saldo', nome: 'Saldo' },
+    { id: 'taxi', nome: 'Táxi' },
+    { id: 'outros', nome: 'Outros' },
+  ];
+
+  const expenseMetrics = month.expensesByCategory && month.expensesByCategory.length > 0
+    ? month.expensesByCategory
+    : ALL_EXPENSES_LIST.map((cat) => {
+        let total = 0;
+        for (const rep of reports) {
+          if (rep.expenses) {
+            for (const e of rep.expenses) {
+              if (e.categoria === cat.id) total += e.valor || 0;
+            }
+          }
+        }
+        const participacaoSaidas = month.totalSaidas > 0 ? (total / month.totalSaidas) * 100 : 0;
+        return {
+          categoria: cat.id,
+          nome: cat.nome,
+          total,
+          participacaoSaidas,
+        };
+      });
+
+  doc.setFontSize(9.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text('2. DISTRIBUIÇÃO DE DESPESAS / SAÍDAS POR CATEGORIA NO MÊS', margin, currentY);
+
+  currentY += 2;
+
+  const expenseTableBody = expenseMetrics.map((exp) => [
+    exp.nome,
+    formatKz(exp.total),
+    `${exp.participacaoSaidas.toFixed(1)}%`,
+  ]);
+
+  autoTable(doc, {
+    startY: currentY,
+    head: [['Categoria da Despesa', 'Valor Total (Kz)', 'Participação nas Saídas (%)']],
+    body: expenseTableBody,
+    foot: [[
+      'TOTAL DE SAÍDAS',
+      formatKz(month.totalSaidas),
+      '100.0%',
+    ]],
+    theme: 'grid',
+    headStyles: {
+      fillColor: [15, 23, 42],
+      textColor: [255, 255, 255],
+      fontSize: 7.5,
+      fontStyle: 'bold',
+      halign: 'center',
+    },
+    footStyles: {
+      fillColor: [255, 241, 242],
+      textColor: [190, 18, 60],
+      fontSize: 7.5,
+      fontStyle: 'bold',
+    },
+    styles: { fontSize: 7, cellPadding: 2, textColor: [30, 41, 59] },
+    columnStyles: {
+      0: { cellWidth: 50, fontStyle: 'bold' },
+      1: { halign: 'right', fontStyle: 'bold' },
+      2: { halign: 'center', cellWidth: 40 },
+    },
+    margin: { left: margin, right: margin },
+  });
+
+  // @ts-expect-error jspdf-autotable injection
+  currentY = (doc.lastAutoTable?.finalY || currentY + 30) + 6;
+
+  // ─── 7. TABELA DE RELATÓRIOS DIÁRIOS ───
+  // Se estiver muito próximo do fim da página, cria nova página
+  if (currentY + 40 > pageHeight - margin) {
+    doc.addPage();
+    currentY = margin + 5;
+  }
+
+  doc.setFontSize(9.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text('3. DETALHAMENTO DIÁRIO DOS FECHOS E MOVIMENTAÇÕES', margin, currentY);
 
   currentY += 2;
 

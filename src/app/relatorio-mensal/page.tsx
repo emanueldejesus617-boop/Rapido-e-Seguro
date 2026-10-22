@@ -25,21 +25,81 @@ import {
   BarChart3,
   Download,
   Printer,
-  FileText,
   Eye,
   Search,
   Filter,
   AlertCircle,
+  PieChart,
+  CreditCard,
+  Smartphone,
+  Tv,
+  Coins,
 } from 'lucide-react';
 import { formatKz, formatDatePt } from '@/lib/utils';
-import { AuthUser, Posto, MonthlyReport, DailyReport } from '@/types';
+import { AuthUser, Posto, MonthlyReport, DailyReport, MonthlyChannelMetric } from '@/types';
 import {
   downloadMonthlyReportPdf,
   openMonthlyReportPdfPrint,
   downloadDailyReportPdf,
 } from '@/lib/monthlyPdfGenerator';
 
-// ─── Utilitários ────────────────────────────────────────────────────────────
+// ─── Metadados Visuais de Canais ───────────────────────────────────────────
+
+const CHANNEL_CONFIG: Record<
+  string,
+  { label: string; icon: React.ReactNode; color: string; badgeBg: string; border: string; bar: string }
+> = {
+  aki: {
+    label: 'AKI',
+    icon: <Zap size={14} className="text-yellow-400" />,
+    color: 'text-yellow-400',
+    badgeBg: 'bg-yellow-950/40 text-yellow-300 border-yellow-700/50',
+    border: 'border-yellow-900/30',
+    bar: 'bg-gradient-to-r from-yellow-600 to-yellow-400',
+  },
+  afrivendas: {
+    label: 'Afrivendas',
+    icon: <DollarSign size={14} className="text-cyan-400" />,
+    color: 'text-cyan-400',
+    badgeBg: 'bg-cyan-950/40 text-cyan-300 border-cyan-700/50',
+    border: 'border-cyan-900/30',
+    bar: 'bg-gradient-to-r from-cyan-600 to-cyan-400',
+  },
+  zap: {
+    label: 'ZAP',
+    icon: <Tv size={14} className="text-orange-400" />,
+    color: 'text-orange-400',
+    badgeBg: 'bg-orange-950/40 text-orange-300 border-orange-700/50',
+    border: 'border-orange-900/30',
+    bar: 'bg-gradient-to-r from-orange-600 to-orange-400',
+  },
+  unitel: {
+    label: 'Unitel',
+    icon: <Smartphone size={14} className="text-rose-400" />,
+    color: 'text-rose-400',
+    badgeBg: 'bg-rose-950/40 text-rose-300 border-rose-700/50',
+    border: 'border-rose-900/30',
+    bar: 'bg-gradient-to-r from-rose-600 to-rose-400',
+  },
+  cartoes: {
+    label: 'Cartões',
+    icon: <CreditCard size={14} className="text-indigo-400" />,
+    color: 'text-indigo-400',
+    badgeBg: 'bg-indigo-950/40 text-indigo-300 border-indigo-700/50',
+    border: 'border-indigo-900/30',
+    bar: 'bg-gradient-to-r from-indigo-600 to-indigo-400',
+  },
+  chips: {
+    label: 'Chips',
+    icon: <Coins size={14} className="text-emerald-400" />,
+    color: 'text-emerald-400',
+    badgeBg: 'bg-emerald-950/40 text-emerald-300 border-emerald-700/50',
+    border: 'border-emerald-900/30',
+    bar: 'bg-gradient-to-r from-emerald-600 to-emerald-400',
+  },
+};
+
+// ─── Utilitários de Data ───────────────────────────────────────────────────
 
 function getMonthProgress(yearMonth: string): number {
   const now = new Date();
@@ -72,10 +132,13 @@ function RelatorioMensalContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Estados para expansão dos relatórios de meses passados
+  // Estados de expansão dos relatórios de meses passados
   const [expandedMonth, setExpandedMonth] = useState<string | null>(null);
   const [monthReports, setMonthReports] = useState<Record<string, DailyReport[]>>({});
   const [loadingMonthReports, setLoadingMonthReports] = useState<Record<string, boolean>>({});
+
+  // Controle de exibição de canais (cards vs tabela)
+  const [channelViewMode, setChannelViewMode] = useState<Record<string, 'cards' | 'table'>>({});
 
   // Estados de download de PDF
   const [downloadingPdf, setDownloadingPdf] = useState<Record<string, boolean>>({});
@@ -144,12 +207,11 @@ function RelatorioMensalContent() {
       const y = m.yearMonth.split('-')[0];
       if (y) years.add(y);
     });
-    // Garantir ano corrente
     years.add(String(new Date().getFullYear()));
     return Array.from(years).sort((a, b) => b.localeCompare(a));
   }, [months]);
 
-  // Meses filtrados por ano e texto de busca
+  // Meses filtrados por ano e busca
   const filteredMonths = useMemo(() => {
     return months.filter((m) => {
       const [y] = m.yearMonth.split('-');
@@ -165,7 +227,7 @@ function RelatorioMensalContent() {
     });
   }, [months, selectedYear, searchQuery]);
 
-  // ── KPIs globais (soma dos meses visíveis após filtro) ──
+  // ── KPIs Globais dos Meses Selecionados ──
   const globalKpis = useMemo(() => {
     return filteredMonths.reduce(
       (acc, m) => ({
@@ -180,7 +242,7 @@ function RelatorioMensalContent() {
     );
   }, [filteredMonths]);
 
-  // ── Expandir e Carregar os Relatórios Diários de um Mês Passado ──
+  // ── Expandir e Carregar os Fechos Diários de um Mês ──
   const toggleExpandMonth = async (m: MonthlyReport) => {
     const ym = m.yearMonth;
     if (expandedMonth === ym) {
@@ -190,7 +252,6 @@ function RelatorioMensalContent() {
 
     setExpandedMonth(ym);
 
-    // Se já tiver os relatórios em cache para este posto, não recarrega
     if (monthReports[ym]) return;
 
     setLoadingMonthReports((prev) => ({ ...prev, [ym]: true }));
@@ -212,13 +273,13 @@ function RelatorioMensalContent() {
       }
     } catch (e) {
       console.error(e);
-      showFeedback('error', `Não foi possível carregar os relatórios diários de ${m.label}`);
+      showFeedback('error', `Não foi possível carregar os fechos diários de ${m.label}`);
     } finally {
       setLoadingMonthReports((prev) => ({ ...prev, [ym]: false }));
     }
   };
 
-  // ── Download em PDF do Relatório Mensal ──
+  // ── Download em PDF do Relatório Mensal com Métricas por Canal ──
   const handleDownloadMonthlyPdf = async (m: MonthlyReport) => {
     setDownloadingPdf((prev) => ({ ...prev, [m.yearMonth]: true }));
     try {
@@ -234,7 +295,7 @@ function RelatorioMensalContent() {
         postoId: selectedPostoId,
       });
 
-      showFeedback('success', `Relatório em PDF de ${m.label} descarregado com sucesso!`);
+      showFeedback('success', `Relatório em PDF de ${m.label} com métricas de todos os canais descarregado com sucesso!`);
     } catch (error) {
       console.error(error);
       showFeedback('error', `Erro ao gerar PDF de ${m.label}.`);
@@ -322,7 +383,7 @@ function RelatorioMensalContent() {
                 Histórico Mensal Consolidado
               </h1>
               <p className="text-xs text-slate-400">
-                Consulte meses passados, explore cada fecho diário e descarregue relatórios oficiais em PDF
+                Métricas completas por canal de venda (AKI, Afrivendas, ZAP, Unitel, Cartões, Chips) com exportação em PDF
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -354,7 +415,7 @@ function RelatorioMensalContent() {
             </div>
           )}
 
-          {/* Barra de Filtros e Busca de Meses Passados */}
+          {/* Barra de Filtros e Busca */}
           <div className="rounded-2xl border border-slate-800 bg-[#0d1424] p-4 sm:p-5 shadow-lg space-y-4">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               {/* Filtro de Ano */}
@@ -442,7 +503,6 @@ function RelatorioMensalContent() {
           {/* KPIs Globais dos Meses Selecionados */}
           {!loading && filteredMonths.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              {/* Total Vendas */}
               <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#0c1f17] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Total Vendas</span>
@@ -451,7 +511,7 @@ function RelatorioMensalContent() {
                 <div className="text-lg font-extrabold text-emerald-400 font-mono">{formatKz(globalKpis.totalVendas)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">{globalKpis.totalReports} relatórios em {filteredMonths.length} {filteredMonths.length === 1 ? 'mês' : 'meses'}</p>
               </div>
-              {/* Total Lucro */}
+
               <div className="rounded-2xl border border-emerald-800/40 bg-gradient-to-br from-[#0d271d] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Lucro (+Taxas)</span>
@@ -460,7 +520,7 @@ function RelatorioMensalContent() {
                 <div className="text-lg font-extrabold text-emerald-300 font-mono">{formatKz(globalKpis.totalLucro)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">Taxas de todos os canais</p>
               </div>
-              {/* Bónus Aki */}
+
               <div className="rounded-2xl border border-yellow-800/40 bg-gradient-to-br from-[#1f1a06] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Bónus Aki</span>
@@ -469,7 +529,7 @@ function RelatorioMensalContent() {
                 <div className="text-lg font-extrabold text-yellow-400 font-mono">{formatKz(globalKpis.totalBonus)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">Bónus acumulado</p>
               </div>
-              {/* Total Saídas */}
+
               <div className="rounded-2xl border border-rose-900/40 bg-gradient-to-br from-[#270d13] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider">Saídas</span>
@@ -478,7 +538,7 @@ function RelatorioMensalContent() {
                 <div className="text-lg font-extrabold text-rose-400 font-mono">{formatKz(globalKpis.totalSaidas)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">Despesas totais</p>
               </div>
-              {/* Resultado Líquido */}
+
               <div className={`rounded-2xl border p-4 shadow-xl ${globalKpis.resultadoLiquido >= 0 ? 'border-emerald-500/40 bg-gradient-to-br from-[#0e3120] to-[#080d19]' : 'border-rose-500/40 bg-gradient-to-br from-[#330f16] to-[#080d19]'}`}>
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-[10px] font-bold uppercase tracking-wider ${globalKpis.resultadoLiquido >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>Resultado Líquido</span>
@@ -490,13 +550,13 @@ function RelatorioMensalContent() {
             </div>
           )}
 
-          {/* Lista de Meses Passados e Atual */}
+          {/* Lista de Meses com Métricas de Canais */}
           <div className="rounded-2xl sm:rounded-3xl border border-slate-800 bg-[#0d1424] shadow-xl overflow-hidden">
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-800">
               <div>
                 <h2 className="text-sm font-bold text-white flex items-center gap-2">
                   <CalendarDays size={16} className="text-emerald-400" />
-                  Arquivo de Meses Passados e Atuais
+                  Arquivo de Meses e Desempenho por Canal
                 </h2>
                 <p className="text-[11px] text-slate-400 mt-0.5">
                   {loading
@@ -510,7 +570,7 @@ function RelatorioMensalContent() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
-                <span className="text-xs text-slate-400">A compilar relatórios dos meses passados...</span>
+                <span className="text-xs text-slate-400">A compilar relatórios e métricas de canais...</span>
               </div>
             ) : filteredMonths.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 gap-3 text-center px-6">
@@ -545,11 +605,14 @@ function RelatorioMensalContent() {
                   const isPrinting = printingPdf[m.yearMonth] || false;
                   const daysList = monthReports[m.yearMonth] || [];
                   const isLoadingDays = loadingMonthReports[m.yearMonth] || false;
+                  const viewMode = channelViewMode[m.yearMonth] || 'cards';
 
                   const [year, month] = m.yearMonth.split('-');
                   const daysInMonth = new Date(parseInt(year, 10), parseInt(month, 10), 0).getDate();
                   const startDate = `${m.yearMonth}-01`;
                   const endDate = `${m.yearMonth}-${String(daysInMonth).padStart(2, '0')}`;
+
+                  const channelsList: MonthlyChannelMetric[] = m.channels || [];
 
                   return (
                     <div
@@ -628,7 +691,7 @@ function RelatorioMensalContent() {
                         </div>
                       </div>
 
-                      {/* Grid de 4 KPIs do Mês */}
+                      {/* Grid de 4 KPIs Resumidos */}
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-4">
                         <div className="rounded-xl bg-slate-900/70 border border-slate-800/80 p-3">
                           <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-1">
@@ -664,7 +727,7 @@ function RelatorioMensalContent() {
                         </div>
                       </div>
 
-                      {/* Barra de Progresso / Margem */}
+                      {/* Barra de Progresso / Margem Líquida */}
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center justify-between text-[10px] text-slate-500">
                           <span>Margem de resultado líquido sobre vendas</span>
@@ -699,9 +762,217 @@ function RelatorioMensalContent() {
                         )}
                       </div>
 
+                      {/* ── PAINEL: MÉTRICAS CONSOLIDADAS POR CANAL DE VENDA NO MÊS ── */}
+                      <div className="my-5 rounded-2xl border border-slate-800/90 bg-[#091120] p-4 sm:p-5 shadow-inner space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-800/70">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <PieChart size={15} className="text-emerald-400" />
+                              <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                                Métricas por Canal de Venda ({m.label})
+                              </h4>
+                            </div>
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              Desempenho discriminado das vendas, taxas (+Lucro) e participação em {m.label}
+                            </p>
+                          </div>
+
+                          {/* Alternador de visualização: Cards vs Tabela */}
+                          <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 self-start sm:self-auto">
+                            <button
+                              type="button"
+                              onClick={() => setChannelViewMode((prev) => ({ ...prev, [m.yearMonth]: 'cards' }))}
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
+                                viewMode === 'cards'
+                                  ? 'bg-emerald-600 text-white shadow'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              Cards
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setChannelViewMode((prev) => ({ ...prev, [m.yearMonth]: 'table' }))}
+                              className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
+                                viewMode === 'table'
+                                  ? 'bg-emerald-600 text-white shadow'
+                                  : 'text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              Tabela
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Visualização em CARDS por Canal */}
+                        {viewMode === 'cards' ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {channelsList.map((ch) => {
+                              const cfg = CHANNEL_CONFIG[ch.canal] || {
+                                label: ch.nome,
+                                icon: <Coins size={14} className="text-emerald-400" />,
+                                color: 'text-emerald-400',
+                                badgeBg: 'bg-emerald-950/40 text-emerald-300 border-emerald-700/50',
+                                border: 'border-slate-800',
+                                bar: 'bg-emerald-500',
+                              };
+
+                              return (
+                                <div
+                                  key={ch.canal}
+                                  className={`rounded-xl border ${cfg.border} bg-slate-900/80 p-3.5 space-y-2.5 shadow-md`}
+                                >
+                                  {/* Topo do Card do Canal */}
+                                  <div className="flex items-center justify-between">
+                                    <span
+                                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-[11px] font-bold ${cfg.badgeBg}`}
+                                    >
+                                      {cfg.icon}
+                                      <span>{cfg.label}</span>
+                                    </span>
+                                    <span className="text-[10px] font-bold text-slate-400 font-mono">
+                                      {ch.participacaoVendas.toFixed(1)}% do mês
+                                    </span>
+                                  </div>
+
+                                  {/* Valores do Canal */}
+                                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60">
+                                    <div>
+                                      <div className="text-[10px] text-slate-500 font-medium uppercase">
+                                        Vendido
+                                      </div>
+                                      <div className="text-xs sm:text-sm font-bold text-white font-mono">
+                                        {formatKz(ch.totalVendido)}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="text-[10px] text-slate-500 font-medium uppercase">
+                                        + Taxa / Lucro
+                                      </div>
+                                      <div className="text-xs sm:text-sm font-bold text-emerald-400 font-mono">
+                                        +{formatKz(ch.totalTaxa)}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Subtotal Arrecadado */}
+                                  <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/40">
+                                    <span className="text-slate-400">Arrecadado:</span>
+                                    <span className="font-bold text-emerald-300 font-mono">
+                                      {formatKz(ch.totalArrecadado)}
+                                    </span>
+                                  </div>
+
+                                  {/* Barra de Progresso do Canal */}
+                                  <div className="space-y-1">
+                                    <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                                      <div
+                                        className={`h-full rounded-full ${cfg.bar}`}
+                                        style={{ width: `${Math.min(ch.participacaoVendas, 100)}%` }}
+                                      />
+                                    </div>
+                                    <div className="flex items-center justify-between text-[9px] text-slate-500">
+                                      <span>Operações:</span>
+                                      <span>{ch.operacoesCount} dias com vendas</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          /* Visualização em TABELA Comparativa */
+                          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
+                            <table className="w-full text-left text-xs min-w-[600px]">
+                              <thead>
+                                <tr className="border-b border-slate-800 text-slate-400 text-[11px] font-semibold bg-slate-900/60">
+                                  <th className="p-3">Canal de Venda</th>
+                                  <th className="p-3 text-right">Vendas Brutas</th>
+                                  <th className="p-3 text-right">Taxa (+Lucro)</th>
+                                  <th className="p-3 text-right">Total Arrecadado</th>
+                                  <th className="p-3 text-center">Participação (%)</th>
+                                  <th className="p-3 text-center">Fechos com Venda</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-800/50">
+                                {channelsList.map((ch) => {
+                                  const cfg = CHANNEL_CONFIG[ch.canal];
+                                  return (
+                                    <tr key={ch.canal} className="hover:bg-slate-800/20 transition-colors">
+                                      <td className="p-3 font-bold text-white flex items-center gap-2">
+                                        {cfg?.icon}
+                                        <span>{cfg?.label || ch.nome}</span>
+                                      </td>
+                                      <td className="p-3 text-right font-mono font-bold text-white">
+                                        {formatKz(ch.totalVendido)}
+                                      </td>
+                                      <td className="p-3 text-right font-mono font-bold text-emerald-400">
+                                        +{formatKz(ch.totalTaxa)}
+                                      </td>
+                                      <td className="p-3 text-right font-mono font-bold text-emerald-300">
+                                        {formatKz(ch.totalArrecadado)}
+                                      </td>
+                                      <td className="p-3 text-center font-mono font-semibold text-slate-300">
+                                        {ch.participacaoVendas.toFixed(1)}%
+                                      </td>
+                                      <td className="p-3 text-center text-slate-400">
+                                        {ch.operacoesCount} fechos
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                              <tfoot>
+                                <tr className="border-t-2 border-slate-700 bg-slate-900/80 font-bold text-white">
+                                  <td className="p-3 uppercase">SUBTOTAL GERAL</td>
+                                  <td className="p-3 text-right font-mono text-emerald-400">
+                                    {formatKz(m.totalVendas)}
+                                  </td>
+                                  <td className="p-3 text-right font-mono text-emerald-300">
+                                    +{formatKz(m.totalLucro)}
+                                  </td>
+                                  <td className="p-3 text-right font-mono text-emerald-200">
+                                    {formatKz(m.totalVendas + m.totalLucro)}
+                                  </td>
+                                  <td className="p-3 text-center font-mono">100.0%</td>
+                                  <td className="p-3 text-center text-slate-400">{m.reportCount} fechos</td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* Despesas por Categoria do Mês */}
+                        {m.expensesByCategory && m.expensesByCategory.length > 0 && (
+                          <div className="pt-3 border-t border-slate-800/70">
+                            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                              Distribuição de Saídas por Categoria ({m.label})
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              {m.expensesByCategory.map((exp) => (
+                                <div
+                                  key={exp.categoria}
+                                  className="rounded-xl border border-rose-950/50 bg-rose-950/20 p-2.5"
+                                >
+                                  <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+                                    <span className="font-semibold text-rose-300">{exp.nome}</span>
+                                    <span className="font-mono text-rose-400 font-bold">
+                                      {exp.participacaoSaidas.toFixed(1)}%
+                                    </span>
+                                  </div>
+                                  <div className="text-xs font-bold text-rose-300 font-mono">
+                                    {formatKz(exp.total)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Barra de Ações: Baixar PDF, Imprimir, Ver Relatórios do Mês */}
                       <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/60">
-                        {/* BOTÃO PRINCIPAL: BAIXAR PDF MENSAL */}
+                        {/* BOTÃO PRINCIPAL: BAIXAR PDF MENSAL COM MÉTRICAS DE CANAL */}
                         <button
                           type="button"
                           onClick={() => handleDownloadMonthlyPdf(m)}
@@ -713,7 +984,11 @@ function RelatorioMensalContent() {
                           ) : (
                             <Download size={14} />
                           )}
-                          <span>{isDownloading ? 'A gerar PDF...' : 'Baixar Relatório Mensal (PDF)'}</span>
+                          <span>
+                            {isDownloading
+                              ? 'A gerar PDF com métricas...'
+                              : 'Baixar Relatório Mensal em PDF'}
+                          </span>
                         </button>
 
                         {/* BOTÃO SECUNDÁRIO: IMPRIMIR / VISUALIZAR PDF */}
@@ -745,8 +1020,8 @@ function RelatorioMensalContent() {
                           <FileSpreadsheet size={13} className="text-emerald-400" />
                           <span>
                             {isExpanded
-                              ? 'Recolher Relatórios do Mês'
-                              : `Ver Relatórios do Mês (${m.reportCount})`}
+                              ? 'Recolher Fechos do Mês'
+                              : `Ver Fechos Diários do Mês (${m.reportCount})`}
                           </span>
                           {isExpanded ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
                         </button>
@@ -761,7 +1036,7 @@ function RelatorioMensalContent() {
                         </Link>
                       </div>
 
-                      {/* PAINEL EXPANSÍVEL: LISTA DE RELATÓRIOS DIÁRIOS DESTE MÊS */}
+                      {/* PAINEL EXPANSÍVEL: LISTA DE FECHOS DIÁRIOS DESTE MÊS */}
                       {isExpanded && (
                         <div className="mt-4 pt-4 border-t border-slate-800/80 animate-fadeIn">
                           <div className="rounded-2xl border border-slate-800 bg-[#091120] overflow-hidden">
@@ -769,11 +1044,11 @@ function RelatorioMensalContent() {
                               <div className="flex items-center gap-2">
                                 <CalendarCheck size={15} className="text-emerald-400" />
                                 <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                                  Relatórios Diários de {m.label} ({daysList.length} fechos)
+                                  Fechos Diários de {m.label} ({daysList.length} dias registados)
                                 </h4>
                               </div>
                               <span className="text-[11px] text-slate-400 font-medium">
-                                Clique para ver detalhes ou descarregar o PDF oficial do dia
+                                Clique para ver detalhes ou descarregar o PDF do fecho
                               </span>
                             </div>
 

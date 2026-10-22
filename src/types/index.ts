@@ -117,6 +117,23 @@ export interface HistoryEntry {
   status: ReportStatus;
 }
 
+export interface MonthlyChannelMetric {
+  canal: ChannelName;
+  nome: string;
+  totalVendido: number;
+  totalTaxa: number;
+  totalArrecadado: number;
+  participacaoVendas: number; // Percentual 0-100%
+  operacoesCount: number;
+}
+
+export interface MonthlyExpenseMetric {
+  categoria: ExpenseCategory;
+  nome: string;
+  total: number;
+  participacaoSaidas: number; // Percentual 0-100%
+}
+
 export interface MonthlyReport {
   yearMonth: string;       // ex: '2026-10'
   label: string;          // ex: 'Outubro 2026'
@@ -128,4 +145,6 @@ export interface MonthlyReport {
   reportCount: number;
   closedCount: number;
   postos: string[];       // nomes dos postos com dados nesse mês
+  channels?: MonthlyChannelMetric[];
+  expensesByCategory?: MonthlyExpenseMetric[];
 }
