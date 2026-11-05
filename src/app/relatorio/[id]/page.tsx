@@ -200,7 +200,7 @@ function ReportDetailContent() {
                     TOTAL FINAL DO DIA (RESULTADO LÍQUIDO REAL)
                   </span>
                   <p className="text-xs text-emerald-400/90 print:text-emerald-800 mt-0.5">
-                    Fórmula: Vendas + Lucros (+ Bónus AKI) − Saídas.
+                    Fórmula: Vendas + Bónus AKI + Bónus ZAP − Saídas.
                   </p>
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-emerald-300 print:text-emerald-900 font-mono">

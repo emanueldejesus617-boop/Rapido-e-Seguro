@@ -63,13 +63,21 @@ export function CloseReportModal({
             <span>Total Vendas:</span>
             <span className="font-mono font-bold text-white">{formatKz(calculations.total_vendas_brutas)}</span>
           </div>
-          <div className="flex justify-between text-slate-400">
-            <span>Lucros (+):</span>
-            <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.total_taxas_acrescentadas)}</span>
-          </div>
+          {calculations.recarga_aki_lucro > 0 && (
+            <div className="flex justify-between text-slate-400">
+              <span>+ Bónus AKI:</span>
+              <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</span>
+            </div>
+          )}
+          {calculations.zap_lucro > 0 && (
+            <div className="flex justify-between text-slate-400">
+              <span>+ Bónus ZAP:</span>
+              <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.zap_lucro)}</span>
+            </div>
+          )}
           {calculations.lucro_do_aki_bonus > 0 && (
             <div className="flex justify-between text-slate-400">
-              <span>Bónus Aki (+):</span>
+              <span>Bónus AKI (Extra):</span>
               <span className="font-mono font-bold text-yellow-400">+{formatKz(calculations.lucro_do_aki_bonus)}</span>
             </div>
           )}

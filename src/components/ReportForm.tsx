@@ -385,7 +385,9 @@ export function ReportForm({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-emerald-400 block mb-1">+ Lucro</label>
+                    <label className="text-[10px] font-semibold text-emerald-400 block mb-1">
+                      {canal === 'aki' ? '+ Bónus AKI' : canal === 'zap' ? '+ Bónus ZAP' : '+ Lucro'}
+                    </label>
                     <input
                       type="number"
                       inputMode="decimal"
@@ -543,16 +545,16 @@ export function ReportForm({
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400">
               {formatKz(calculations.total_final)}
             </div>
-            <span className="text-[10px] text-emerald-500 font-semibold">(c/ Bónus Aki)</span>
+            <span className="text-[10px] text-emerald-500 font-semibold">(c/ Bónus AKI e ZAP)</span>
           </div>
 
-          {/* Valor sem bónus */}
+          {/* Valor sem bónus extra */}
           {calculations.lucro_do_aki_bonus > 0 && (
             <div className="flex items-baseline gap-2">
               <div className="text-base sm:text-lg font-bold font-mono text-slate-300">
                 {formatKz(calculations.total_final_sem_bonus)}
               </div>
-              <span className="text-[10px] text-slate-500 font-semibold">(s/ Bónus Aki)</span>
+              <span className="text-[10px] text-slate-500 font-semibold">(s/ Bónus Aki extra)</span>
             </div>
           )}
 
@@ -560,11 +562,21 @@ export function ReportForm({
           <div className="text-[10px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-2 pt-1">
             <span>Vendas: <strong className="text-emerald-400">{formatKz(calculations.total_vendas_brutas)}</strong></span>
             <span>•</span>
-            <span>Lucros: <strong className="text-emerald-300">+{formatKz(calculations.total_taxas_acrescentadas)}</strong></span>
-            <span>•</span>
+            {calculations.recarga_aki_lucro > 0 && (
+              <>
+                <span>+ Bónus AKI: <strong className="text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</strong></span>
+                <span>•</span>
+              </>
+            )}
+            {calculations.zap_lucro > 0 && (
+              <>
+                <span>+ Bónus ZAP: <strong className="text-emerald-300">+{formatKz(calculations.zap_lucro)}</strong></span>
+                <span>•</span>
+              </>
+            )}
             {calculations.lucro_do_aki_bonus > 0 && (
               <>
-                <span>Bónus Aki: <strong className="text-yellow-400">+{formatKz(calculations.lucro_do_aki_bonus)}</strong></span>
+                <span>Bónus AKI extra: <strong className="text-yellow-400">+{formatKz(calculations.lucro_do_aki_bonus)}</strong></span>
                 <span>•</span>
               </>
             )}

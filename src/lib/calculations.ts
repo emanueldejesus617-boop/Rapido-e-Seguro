@@ -1,7 +1,10 @@
 /**
  * MOTOR DE CÁLCULO FINANCEIRO - RÁPIDO E SEGURO
  * Regra de Negócio:
- * Resultado Líquido = Vendas Brutas + Total Lucros (Taxas de todos os canais) (+ Bónus AKI, se houver) − Total Saídas
+ * Os únicos bónus incluídos no total diário são:
+ * + Bónus AKI (lucro/comissão da Recarga AKI + Bónus AKI extra se houver)
+ * + Bónus ZAP (lucro/comissão da ZAP Directo)
+ * Resultado Líquido Diário = Vendas Brutas + Bónus AKI + Bónus ZAP (− Saídas)
  */
 
 export interface ChannelInput {
@@ -49,15 +52,14 @@ export function calculateChannelProfit(valorVendido: number, taxa: number = 0): 
 
 /**
  * 2. Lucro Operacional do Dia:
- * Soma dos lucros de todos os canais (+ taxas acrescentadas) + bónus
+ * Bónus AKI + Bónus ZAP (+ Bónus AKI extra se houver)
  */
 export function calculateOperationalProfit(
-  totalTaxas: number,
-  akiBonus: number = 0
+  recargaAkiLucro: number = 0,
+  zapLucro: number = 0,
+  akiBonusExtra: number = 0
 ): number {
-  const taxas = Number(totalTaxas) || 0;
-  const bonus = Number(akiBonus) || 0;
-  return taxas + bonus;
+  return (Number(recargaAkiLucro) || 0) + (Number(zapLucro) || 0) + (Number(akiBonusExtra) || 0);
 }
 
 /**
@@ -71,15 +73,18 @@ export function calculateTotalExpenses(expenses: ExpenseInput[]): number {
 
 /**
  * 4. Total Final do Dia (Resultado Líquido Real de Caixa):
- * Regra Oficial: Resultado Líquido = Vendas Brutas + Total Taxas (lucros de todos os canais) + Bónus AKI − Total Saídas
+ * Regra Oficial: Os únicos bónus incluídos no total diário são:
+ * + Bónus AKI (recarga_aki_lucro + bónus extra) e + Bónus ZAP (zap_lucro).
+ * Total Final = Vendas Brutas + Bónus AKI + Bónus ZAP − Saídas
  */
 export function calculateFinalTotal(
   totalVendas: number,
-  totalTaxas: number,
+  recargaAkiLucro: number,
+  zapLucro: number,
   totalSaidas: number,
   akiBonus: number = 0
 ): number {
-  const ganhos = (Number(totalVendas) || 0) + (Number(totalTaxas) || 0) + (Number(akiBonus) || 0);
+  const ganhos = (Number(totalVendas) || 0) + (Number(recargaAkiLucro) || 0) + (Number(zapLucro) || 0) + (Number(akiBonus) || 0);
   const saidas = Number(totalSaidas) || 0;
   return ganhos - saidas;
 }
@@ -123,14 +128,14 @@ export function calculateDailyReport(
   });
 
   const bonusAki = Number(akiBonus) || 0;
-  const lucroOperacional = calculateOperationalProfit(totalTaxas, bonusAki);
+  const lucroOperacional = calculateOperationalProfit(recargaAkiLucro, zapLucro, bonusAki);
   const totalSaidas = calculateTotalExpenses(expenses);
   
-  // Resultado Líquido SEM bónus: (Vendas + Todas as Taxas) - Saídas
-  const totalFinalSemBonus = calculateFinalTotal(totalVendasBrutas, totalTaxas, totalSaidas, 0);
+  // Total do dia SEM bónus extra do Aki: (Vendas + Bónus AKI da recarga + Bónus ZAP) - Saídas
+  const totalFinalSemBonus = calculateFinalTotal(totalVendasBrutas, recargaAkiLucro, zapLucro, totalSaidas, 0);
 
-  // Resultado Líquido COM bónus: (Vendas + Todas as Taxas + Bónus AKI) - Saídas
-  const totalFinal = calculateFinalTotal(totalVendasBrutas, totalTaxas, totalSaidas, bonusAki);
+  // Total do dia COM bónus AKI e ZAP (incluindo bónus AKI extra se houver):
+  const totalFinal = calculateFinalTotal(totalVendasBrutas, recargaAkiLucro, zapLucro, totalSaidas, bonusAki);
 
   return {
     canais: canaisProcessados,
