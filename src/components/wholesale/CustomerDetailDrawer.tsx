@@ -18,6 +18,7 @@ import {
   Layers,
   ChevronDown,
   ChevronUp,
+  AlertTriangle,
 } from 'lucide-react';
 import { WholesaleCustomer, WholesaleSale } from '@/types';
 import { formatKz, formatDatePt } from '@/lib/utils';
@@ -33,6 +34,7 @@ interface CustomerDetailDrawerProps {
   customer: WholesaleCustomer | null;
   onOpenNewSale: () => void;
   onSaleDeleted: (saleId: string) => void;
+  onCustomerDeleted: (customerId: string) => void;
   userRole?: string;
 }
 
@@ -42,9 +44,12 @@ export function CustomerDetailDrawer({
   customer,
   onOpenNewSale,
   onSaleDeleted,
+  onCustomerDeleted,
   userRole,
 }: CustomerDetailDrawerProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingCustomer, setDeletingCustomer] = useState(false);
+  const [confirmDeleteCustomer, setConfirmDeleteCustomer] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [showProductBreakdown, setShowProductBreakdown] = useState<boolean>(true);
 
@@ -75,6 +80,25 @@ export function CustomerDetailDrawer({
   }, [displayedMonths]);
 
   if (!isOpen || !customer) return null;
+
+  const handleDeleteCustomer = async () => {
+    if (!customer) return;
+    try {
+      setDeletingCustomer(true);
+      const res = await fetch(`/api/wholesale/customers/${customer.id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Falha ao eliminar cliente');
+      }
+      onCustomerDeleted(customer.id);
+      onClose();
+    } catch (err: any) {
+      alert(err.message || 'Erro ao eliminar cliente');
+    } finally {
+      setDeletingCustomer(false);
+      setConfirmDeleteCustomer(false);
+    }
+  };
 
   const handleDeleteSale = async (saleId: string) => {
     if (!window.confirm('Tem certeza de que deseja eliminar este registo de venda a grosso?')) {
@@ -116,12 +140,6 @@ export function CustomerDetailDrawer({
                 <h2 className="text-lg sm:text-xl font-extrabold text-white">
                   {customer.nome}
                 </h2>
-                {customer.posto && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-800 border border-slate-700 px-2 py-0.5 text-[10px] font-bold text-slate-300">
-                    <Building2 size={10} className="text-sky-400" />
-                    {customer.posto.nome}
-                  </span>
-                )}
               </div>
               <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 mt-1">
                 {customer.telefone && (
@@ -158,6 +176,14 @@ export function CustomerDetailDrawer({
             >
               <Plus size={15} />
               <span>Nova Venda a Grosso</span>
+            </button>
+            <button
+              onClick={() => setConfirmDeleteCustomer(true)}
+              className="flex items-center gap-1.5 rounded-xl border border-rose-800/60 bg-rose-950/40 px-3.5 py-2 text-xs font-bold text-rose-400 hover:bg-rose-900/60 hover:text-rose-300 transition active:scale-95"
+              title="Eliminar Cliente"
+            >
+              <Trash2 size={14} />
+              <span className="hidden sm:inline">Eliminar Cliente</span>
             </button>
             <button
               onClick={onClose}
@@ -465,6 +491,51 @@ export function CustomerDetailDrawer({
           )}
         </div>
       </div>
+
+      {/* Modal de Confirmação para Eliminar Cliente */}
+      {confirmDeleteCustomer && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-3xl border border-rose-900/60 bg-[#0c1322] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                <Trash2 size={22} />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white">Eliminar Cliente</h4>
+                <p className="text-xs text-slate-400">Esta ação não pode ser desfeita</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Tem a certeza de que deseja eliminar o cliente <strong className="text-white font-bold">{customer.nome}</strong>?
+              {customer.salesCount && customer.salesCount > 0 ? (
+                <span className="block mt-2 rounded-xl border border-rose-800/50 bg-rose-950/40 p-2.5 text-rose-300 font-medium">
+                  Atenção: Este cliente possui <strong className="text-white">{customer.salesCount} venda(s)</strong> registada(s) que também serão eliminadas permanentemente.
+                </span>
+              ) : null}
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800/80">
+              <button
+                type="button"
+                disabled={deletingCustomer}
+                onClick={() => setConfirmDeleteCustomer(false)}
+                className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={deletingCustomer}
+                onClick={handleDeleteCustomer}
+                className="rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-rose-500 transition active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              >
+                {deletingCustomer ? 'A eliminar...' : 'Sim, Eliminar Cliente'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

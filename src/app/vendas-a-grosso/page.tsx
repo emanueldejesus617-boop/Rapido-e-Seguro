@@ -23,9 +23,10 @@ import {
   AlertCircle,
   CheckCircle2,
   Package,
+  Trash2,
 } from 'lucide-react';
 import { formatKz, formatDatePt } from '@/lib/utils';
-import { AuthUser, Posto, WholesaleCustomer, WholesaleSummary } from '@/types';
+import { AuthUser, WholesaleCustomer, WholesaleSummary } from '@/types';
 import { NewCustomerModal } from '@/components/wholesale/NewCustomerModal';
 import { NewSaleModal } from '@/components/wholesale/NewSaleModal';
 import { CustomerDetailDrawer } from '@/components/wholesale/CustomerDetailDrawer';
@@ -37,8 +38,6 @@ function WholesaleContent() {
 
   // Estados principais
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [postos, setPostos] = useState<Posto[]>([]);
-  const [selectedPostoId, setSelectedPostoId] = useState<string>('all');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Dados de clientes e métricas
@@ -51,6 +50,8 @@ function WholesaleContent() {
   const [isNewCustomerModalOpen, setIsNewCustomerModalOpen] = useState(false);
   const [isNewSaleModalOpen, setIsNewSaleModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<WholesaleCustomer | null>(null);
+  const [customerToDelete, setCustomerToDelete] = useState<WholesaleCustomer | null>(null);
+  const [deletingCustomer, setDeletingCustomer] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // 1. Autenticação e Postos
@@ -64,16 +65,6 @@ function WholesaleContent() {
         }
         const data = await res.json();
         setUser(data.user);
-
-        if (data.user.postoId) {
-          setSelectedPostoId(data.user.postoId);
-        }
-
-        const resPostos = await fetch('/api/postos');
-        if (resPostos.ok) {
-          const pData = await resPostos.json();
-          setPostos(pData.postos || []);
-        }
       } catch {
         router.push('/login');
       }
@@ -85,11 +76,9 @@ function WholesaleContent() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const postoParam = selectedPostoId && selectedPostoId !== 'all' ? `?postoId=${selectedPostoId}` : '';
-
       const [resCustomers, resSummary] = await Promise.all([
-        fetch(`/api/wholesale/customers${postoParam}`),
-        fetch(`/api/wholesale/summary${postoParam}`),
+        fetch('/api/wholesale/customers'),
+        fetch('/api/wholesale/summary'),
       ]);
 
       if (resCustomers.ok) {
@@ -111,7 +100,7 @@ function WholesaleContent() {
     if (user) {
       loadData();
     }
-  }, [user, selectedPostoId]);
+  }, [user]);
 
   // Atualizar cliente selecionado quando houver alterações
   const reloadSelectedCustomer = async (customerId: string) => {
@@ -160,6 +149,36 @@ function WholesaleContent() {
     }
   };
 
+  const handleCustomerDeleted = (customerId: string) => {
+    setFeedback({ type: 'success', message: 'Cliente eliminado com sucesso!' });
+    if (selectedCustomer?.id === customerId) {
+      setSelectedCustomer(null);
+    }
+    loadData();
+  };
+
+  const handleConfirmDeleteCustomer = async () => {
+    if (!customerToDelete) return;
+    try {
+      setDeletingCustomer(true);
+      const res = await fetch(`/api/wholesale/customers/${customerToDelete.id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Erro ao eliminar cliente');
+      }
+      setFeedback({ type: 'success', message: `Cliente "${customerToDelete.nome}" eliminado com sucesso!` });
+      if (selectedCustomer?.id === customerToDelete.id) {
+        setSelectedCustomer(null);
+      }
+      setCustomerToDelete(null);
+      loadData();
+    } catch (e: any) {
+      setFeedback({ type: 'error', message: e.message || 'Erro ao eliminar cliente' });
+    } finally {
+      setDeletingCustomer(false);
+    }
+  };
+
   const handleOpenCustomer = async (cust: WholesaleCustomer) => {
     // Carregar detalhes completos com as vendas
     await reloadSelectedCustomer(cust.id);
@@ -202,31 +221,6 @@ function WholesaleContent() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-            {/* Seletor de Posto para Administrador */}
-            {user?.role === 'admin' ? (
-              <div className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-slate-200 shadow-sm">
-                <Store size={15} className="text-sky-400 shrink-0" />
-                <span className="text-slate-400 hidden sm:inline">Posto:</span>
-                <select
-                  value={selectedPostoId}
-                  onChange={(e) => setSelectedPostoId(e.target.value)}
-                  className="bg-transparent text-white font-bold focus:outline-none cursor-pointer text-xs"
-                >
-                  <option value="all" className="bg-slate-900 text-white">Todos os Postos</option>
-                  {postos.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-slate-900 text-white">
-                      {p.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 rounded-2xl border border-sky-500/30 bg-sky-950/40 px-3.5 py-2 text-xs font-bold text-sky-300">
-                <Store size={15} className="text-sky-400 shrink-0" />
-                <span>{user?.postoNome || 'Posto 1'}</span>
-              </div>
-            )}
-
             <HeaderInstallButton />
 
             <button
@@ -393,28 +387,35 @@ function WholesaleContent() {
                         <h3 className="text-sm font-bold text-white group-hover:text-sky-400 transition-colors">
                           {cust.nome}
                         </h3>
-                        {cust.posto && (
-                          <span className="text-[10px] text-slate-500 flex items-center gap-1">
-                            <Store size={10} />
-                            {cust.posto.nome}
-                          </span>
-                        )}
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedCustomer(cust);
-                        setIsNewSaleModalOpen(true);
-                      }}
-                      className="flex h-8 items-center gap-1 rounded-xl bg-sky-500/10 border border-sky-500/20 px-2.5 text-[11px] font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition"
-                      title="Lançar nova venda direta"
-                    >
-                      <Plus size={13} />
-                      <span>Venda</span>
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCustomer(cust);
+                          setIsNewSaleModalOpen(true);
+                        }}
+                        className="flex h-8 items-center gap-1 rounded-xl bg-sky-500/10 border border-sky-500/20 px-2.5 text-[11px] font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition"
+                        title="Lançar nova venda direta"
+                      >
+                        <Plus size={13} />
+                        <span>Venda</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCustomerToDelete(cust);
+                        }}
+                        className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-600 hover:text-white transition"
+                        title="Eliminar cliente"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="space-y-1.5 text-xs text-slate-400">
@@ -459,9 +460,6 @@ function WholesaleContent() {
         isOpen={isNewCustomerModalOpen}
         onClose={() => setIsNewCustomerModalOpen(false)}
         onCreated={handleCustomerCreated}
-        postos={postos}
-        userRole={user?.role}
-        defaultPostoId={user?.role === 'vendedor' ? user.postoId || undefined : undefined}
       />
 
       {/* Modal: Nova Venda a Grosso */}
@@ -479,8 +477,54 @@ function WholesaleContent() {
         customer={selectedCustomer}
         onOpenNewSale={() => setIsNewSaleModalOpen(true)}
         onSaleDeleted={handleSaleDeleted}
+        onCustomerDeleted={handleCustomerDeleted}
         userRole={user?.role}
       />
+
+      {/* Modal de Confirmação para Eliminar Cliente */}
+      {customerToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-3xl border border-rose-900/60 bg-[#0c1322] p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 shrink-0">
+                <Trash2 size={22} />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white">Eliminar Cliente</h4>
+                <p className="text-xs text-slate-400">Esta ação não pode ser desfeita</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Tem a certeza de que deseja eliminar o cliente <strong className="text-white font-bold">{customerToDelete.nome}</strong>?
+              {customerToDelete.salesCount && customerToDelete.salesCount > 0 ? (
+                <span className="block mt-2 rounded-xl border border-rose-800/50 bg-rose-950/40 p-2.5 text-rose-300 font-medium">
+                  Atenção: Este cliente possui <strong className="text-white">{customerToDelete.salesCount} venda(s)</strong> registada(s) que também serão eliminadas permanentemente.
+                </span>
+              ) : null}
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800/80">
+              <button
+                type="button"
+                disabled={deletingCustomer}
+                onClick={() => setCustomerToDelete(null)}
+                className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={deletingCustomer}
+                onClick={handleConfirmDeleteCustomer}
+                className="rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-rose-500 transition active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              >
+                {deletingCustomer ? 'A eliminar...' : 'Sim, Eliminar Cliente'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

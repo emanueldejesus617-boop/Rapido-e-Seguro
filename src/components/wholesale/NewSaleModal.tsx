@@ -36,13 +36,12 @@ export function NewSaleModal({
     }
   }, [produto]);
 
-  // Cálculo dinâmico do total: (Quantidade * Valor) + Bónus
+  // Cálculo dinâmico do total: TOTAL = VENDAS + BÓNUS
   const totalCalculado = useMemo(() => {
-    const qtd = parseFloat(quantidade) || 0;
     const val = parseFloat(valor) || 0;
     const bns = parseFloat(bonus) || 0;
-    return (qtd * val) + bns;
-  }, [quantidade, valor, bonus]);
+    return val + bns;
+  }, [valor, bonus]);
 
   if (!isOpen || !customer) return null;
 
@@ -180,11 +179,11 @@ export function NewSaleModal({
               />
             </div>
 
-            {/* Valor Unitário */}
+            {/* Valor Total das Vendas */}
             <div>
               <label className="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1.5">
                 <DollarSign size={13} className="text-slate-400" />
-                <span>Valor (Kz)</span>
+                <span>Valor das Vendas (Kz)</span>
               </label>
               <input
                 type="number"
@@ -227,7 +226,7 @@ export function NewSaleModal({
                   Total da Venda
                 </span>
                 <span className="text-[10px] text-slate-500">
-                  (Qtd × Valor) + Bónus
+                  Vendas + Bónus
                 </span>
               </div>
             </div>

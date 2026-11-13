@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
     const produto = searchParams.get('produto') || undefined;
     const dataInicio = searchParams.get('startDate') || undefined;
     const dataFim = searchParams.get('endDate') || undefined;
-    const postoIdParam = searchParams.get('postoId') || undefined;
 
     const where: any = {};
     if (customerId) where.customerId = customerId;
@@ -39,12 +38,6 @@ export async function GET(request: NextRequest) {
       where.data = { gte: dataInicio };
     } else if (dataFim) {
       where.data = { lte: dataFim };
-    }
-
-    if (user.role === 'vendedor') {
-      if (user.postoId) where.postoId = user.postoId;
-    } else if (postoIdParam && postoIdParam !== 'all') {
-      where.postoId = postoIdParam;
     }
 
     const sales = await prisma.wholesaleSale.findMany({
@@ -76,14 +69,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
-    const effectivePostoId = user.role === 'vendedor'
-      ? user.postoId
-      : (parsed.data.postoId || user.postoId);
-
     const sale = await createWholesaleSale({
       customerId: parsed.data.customerId,
       userId: user.id,
-      postoId: effectivePostoId || undefined,
+      postoId: null, // Vendas a grosso sem vinculação a postos
       data: parsed.data.data,
       produto: parsed.data.produto,
       quantidade: parsed.data.quantidade,

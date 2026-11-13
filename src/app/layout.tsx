@@ -22,7 +22,7 @@ export const metadata: Metadata = {
       { url: '/icons/icon.svg', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/images/logo.png', sizes: '180x180', type: 'image/png' },
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 };
@@ -47,7 +47,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="CSA Rápido e Seguro" />
-        <link rel="apple-touch-icon" href="/images/logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
       </head>
       <body className="min-h-screen bg-[#070d1e] text-slate-100 antialiased font-sans overflow-x-hidden">
         {children}

@@ -9,11 +9,7 @@ export async function GET(request: NextRequest) {
     const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
 
-    const { searchParams } = new URL(request.url);
-    const postoIdParam = searchParams.get('postoId') || undefined;
-    const effectivePostoId = user.role === 'vendedor' ? (user.postoId || undefined) : postoIdParam;
-
-    const summary = await getWholesaleSummary(effectivePostoId);
+    const summary = await getWholesaleSummary();
     return NextResponse.json({ summary });
   } catch (error: any) {
     console.error('Erro ao buscar resumo de vendas a grosso:', error);

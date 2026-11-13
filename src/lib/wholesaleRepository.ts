@@ -209,7 +209,8 @@ export async function createWholesaleSale(data: {
   const qtd = Number(data.quantidade) || 0;
   const val = Number(data.valor) || 0;
   const bns = Number(data.bonus) || 0;
-  const calculatedTotal = data.total !== undefined ? Number(data.total) : (qtd * val) + bns;
+  // TOTAL = VENDAS + BÓNUS  (Vendas = valor total das vendas; Bónus = valor de bónus)
+  const calculatedTotal = data.total !== undefined ? Number(data.total) : val + bns;
 
   return prisma.wholesaleSale.create({
     data: {
@@ -256,7 +257,8 @@ export async function updateWholesaleSale(
   const qtd = data.quantidade !== undefined ? Number(data.quantidade) : current.quantidade;
   const val = data.valor !== undefined ? Number(data.valor) : current.valor;
   const bns = data.bonus !== undefined ? Number(data.bonus) : current.bonus;
-  const calculatedTotal = data.total !== undefined ? Number(data.total) : (qtd * val) + bns;
+  // TOTAL = VENDAS + BÓNUS  (Vendas = valor total das vendas; Bónus = valor de bónus)
+  const calculatedTotal = data.total !== undefined ? Number(data.total) : val + bns;
 
   const updateData: any = {
     quantidade: qtd,

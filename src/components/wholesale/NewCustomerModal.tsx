@@ -1,30 +1,22 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, UserPlus, Phone, MapPin, Store, AlertCircle, Loader2 } from 'lucide-react';
-import { Posto } from '@/types';
+import { X, UserPlus, Phone, MapPin, AlertCircle, Loader2 } from 'lucide-react';
 
 interface NewCustomerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreated: (customer: any) => void;
-  postos: Posto[];
-  userRole?: string;
-  defaultPostoId?: string;
 }
 
 export function NewCustomerModal({
   isOpen,
   onClose,
   onCreated,
-  postos,
-  userRole,
-  defaultPostoId,
 }: NewCustomerModalProps) {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
   const [localizacao, setLocalizacao] = useState('');
-  const [postoId, setPostoId] = useState(defaultPostoId || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +40,6 @@ export function NewCustomerModal({
           nome: nome.trim(),
           telefone: telefone.trim() || null,
           localizacao: localizacao.trim() || null,
-          postoId: postoId || null,
         }),
       });
 
@@ -142,28 +133,6 @@ export function NewCustomerModal({
               className="w-full rounded-xl border border-slate-700 bg-[#070b14] px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:border-sky-500 focus:outline-none"
             />
           </div>
-
-          {/* Posto de Atendimento (Se admin) */}
-          {userRole === 'admin' && postos.length > 0 && (
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1.5">
-                <Store size={13} className="text-slate-400" />
-                <span>Posto Vinculado</span>
-              </label>
-              <select
-                value={postoId}
-                onChange={(e) => setPostoId(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-[#070b14] px-3.5 py-2.5 text-xs font-medium text-white focus:border-sky-500 focus:outline-none cursor-pointer"
-              >
-                <option value="">Todos os Postos (Geral)</option>
-                {postos.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nome}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           {/* Ações */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800/80">
