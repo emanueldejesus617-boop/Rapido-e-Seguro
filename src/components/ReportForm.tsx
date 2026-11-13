@@ -248,7 +248,7 @@ export function ReportForm({
                   isReportFechado
                     ? user?.role === 'admin'
                       ? 'bg-blue-950/80 text-blue-400 border border-blue-600/50'
-                      : 'bg-emerald-950/80 text-emerald-400 border border-emerald-600/50'
+                      : 'bg-sky-950/80 text-sky-400 border border-sky-600/50'
                     : 'bg-amber-950/80 text-amber-400 border border-amber-600/50'
                 }`}
               >
@@ -270,7 +270,7 @@ export function ReportForm({
           {/* Posto de Vendas */}
           {user?.role === 'admin' ? (
             <div className="flex items-center gap-2 rounded-xl sm:rounded-2xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-slate-200 shadow-sm">
-              <Store size={15} className="text-emerald-400 shrink-0" />
+              <Store size={15} className="text-sky-400 shrink-0" />
               <span className="text-slate-400">Posto:</span>
               <select
                 value={activeReportPostoId || ''}
@@ -285,16 +285,16 @@ export function ReportForm({
               </select>
             </div>
           ) : (
-            <div className="flex items-center gap-2 rounded-xl sm:rounded-2xl border border-emerald-500/30 bg-emerald-950/40 px-3.5 py-2 text-xs font-bold text-emerald-300">
-              <Store size={15} className="text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-2 rounded-xl sm:rounded-2xl border border-sky-500/30 bg-sky-950/40 px-3.5 py-2 text-xs font-bold text-sky-300">
+              <Store size={15} className="text-sky-400 shrink-0" />
               <span>{user?.postoNome || 'Posto 1'}</span>
             </div>
           )}
 
           {/* Seletor de Data */}
-          <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 rounded-xl sm:rounded-2xl border border-emerald-500/30 bg-emerald-950/30 px-3.5 py-2 text-xs font-semibold text-emerald-300">
+          <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 rounded-xl sm:rounded-2xl border border-sky-500/30 bg-sky-950/30 px-3.5 py-2 text-xs font-semibold text-sky-300">
             <span className="flex items-center gap-1.5">
-              <Calendar size={15} className="text-emerald-400" />
+              <Calendar size={15} className="text-sky-400" />
               <span>Data:</span>
             </span>
             <input
@@ -312,7 +312,7 @@ export function ReportForm({
         <div
           className={`rounded-2xl p-3.5 sm:p-4 text-xs font-semibold flex items-center justify-between border ${
             feedback.type === 'success'
-              ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80'
+              ? 'bg-sky-950/60 text-sky-300 border-sky-800/80'
               : 'bg-rose-950/60 text-rose-300 border-rose-800/80'
           }`}
         >
@@ -330,7 +330,7 @@ export function ReportForm({
       <div className="rounded-2xl sm:rounded-3xl border border-slate-800 bg-[#0d1424] p-4 sm:p-6 shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400 shrink-0">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/20 text-sky-400 shrink-0">
               <TrendingUp size={16} />
             </div>
             <div>
@@ -340,7 +340,7 @@ export function ReportForm({
               </p>
             </div>
           </div>
-          <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/50 px-3 py-1 rounded-xl self-start sm:self-auto">
+          <span className="text-xs font-mono font-bold text-sky-400 bg-sky-950/40 border border-sky-800/50 px-3 py-1 rounded-xl self-start sm:self-auto">
             Subtotal: {formatKz(calculations.soma_lucros_parciais)}
           </span>
         </div>
@@ -356,18 +356,18 @@ export function ReportForm({
             return (
               <div
                 key={canal}
-                className="rounded-2xl border border-slate-800/90 bg-[#090d18] p-3.5 sm:p-4 space-y-3 transition hover:border-emerald-500/40"
+                className="rounded-2xl border border-slate-800/90 bg-[#090d18] p-3.5 sm:p-4 space-y-3 transition hover:border-sky-500/40"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
                       <Icon size={15} />
                     </div>
                     <span className="text-xs font-bold text-white">{cfg.label}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-[9px] font-semibold text-slate-500 uppercase">Arrecadado</div>
-                    <div className="text-xs font-mono font-bold text-emerald-400">{formatKz(arrecadado)}</div>
+                    <div className="text-xs font-mono font-bold text-sky-400">{formatKz(arrecadado)}</div>
                   </div>
                 </div>
 
@@ -381,11 +381,11 @@ export function ReportForm({
                       placeholder="0 Kz"
                       value={channels[canal].valor_vendido}
                       onChange={(e) => handleChannelChange(canal, 'valor_vendido', e.target.value)}
-                      className="w-full rounded-xl border border-slate-800 bg-[#070b14] px-3 py-2.5 text-xs font-mono text-white placeholder-slate-600 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                      className="w-full rounded-xl border border-slate-800 bg-[#070b14] px-3 py-2.5 text-xs font-mono text-white placeholder-slate-600 focus:border-sky-500 focus:outline-none disabled:opacity-60"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-emerald-400 block mb-1">
+                    <label className="text-[10px] font-semibold text-sky-400 block mb-1">
                       {canal === 'aki' ? '+ Bónus AKI' : canal === 'zap' ? '+ Bónus ZAP' : '+ Lucro'}
                     </label>
                     <input
@@ -395,7 +395,7 @@ export function ReportForm({
                       placeholder="0 Kz"
                       value={channels[canal].taxa}
                       onChange={(e) => handleChannelChange(canal, 'taxa', e.target.value)}
-                      className="w-full rounded-xl border border-emerald-900/60 bg-[#070b14] px-3 py-2.5 text-xs font-mono text-emerald-300 placeholder-slate-600 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                      className="w-full rounded-xl border border-sky-900/60 bg-[#070b14] px-3 py-2.5 text-xs font-mono text-sky-300 placeholder-slate-600 focus:border-sky-500 focus:outline-none disabled:opacity-60"
                     />
                   </div>
                 </div>
@@ -408,13 +408,13 @@ export function ReportForm({
       {/* SEÇÃO 2: BÓNUS AKI */}
       <div className="rounded-2xl sm:rounded-3xl border border-slate-800 bg-[#0d1424] p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
             <Coins size={18} />
           </div>
           <div>
             <div className="text-xs font-bold text-white flex items-center gap-2">
               Bónus do AKI (Kz)
-              <span className="rounded-md bg-emerald-500/20 px-1.5 py-0.2 text-[9px] font-bold text-emerald-300 border border-emerald-500/30">
+              <span className="rounded-md bg-sky-500/20 px-1.5 py-0.2 text-[9px] font-bold text-sky-300 border border-sky-500/30">
                 Informativo
               </span>
             </div>
@@ -431,7 +431,7 @@ export function ReportForm({
             placeholder="0 Kz"
             value={akiBonus}
             onChange={(e) => setAkiBonus(e.target.value)}
-            className="w-full rounded-xl border border-slate-700 bg-[#070b14] px-3.5 py-2.5 text-xs font-mono font-semibold text-emerald-300 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+            className="w-full rounded-xl border border-slate-700 bg-[#070b14] px-3.5 py-2.5 text-xs font-mono font-semibold text-sky-300 focus:border-sky-500 focus:outline-none disabled:opacity-60"
           />
         </div>
       </div>
@@ -531,21 +531,21 @@ export function ReportForm({
           placeholder="Anotações do operador, quebras de troco ou ocorrências do dia..."
           value={observacoes}
           onChange={(e) => setObservacoes(e.target.value)}
-          className="w-full rounded-xl border border-slate-800 bg-[#070b14] p-3 text-xs text-slate-200 placeholder-slate-600 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+          className="w-full rounded-xl border border-slate-800 bg-[#070b14] p-3 text-xs text-slate-200 placeholder-slate-600 focus:border-sky-500 focus:outline-none disabled:opacity-60"
         />
       </div>
 
       {/* BARRA DE ACÇÃO & FECHO */}
-      <div className="rounded-2xl sm:rounded-3xl border border-emerald-900/50 bg-gradient-to-r from-[#0a2118] via-[#0d1424] to-[#200d14] p-4 sm:p-6 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <div className="rounded-2xl sm:rounded-3xl border border-sky-900/50 bg-gradient-to-r from-[#0a172e] via-[#0d172e] to-[#200d14] p-4 sm:p-6 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div className="space-y-2">
           <div className="text-xs font-bold uppercase tracking-wider text-slate-400">Resultado Líquido do Dia</div>
 
           {/* Valor com bónus */}
           <div className="flex items-baseline gap-2">
-            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400">
+            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-sky-400">
               {formatKz(calculations.total_final)}
             </div>
-            <span className="text-[10px] text-emerald-500 font-semibold">(c/ Bónus AKI e ZAP)</span>
+            <span className="text-[10px] text-sky-400 font-semibold">(c/ Bónus AKI e ZAP)</span>
           </div>
 
           {/* Valor sem bónus extra */}
@@ -560,17 +560,17 @@ export function ReportForm({
 
           {/* Barra de detalhe */}
           <div className="text-[10px] sm:text-[11px] text-slate-400 flex flex-wrap items-center gap-2 pt-1">
-            <span>Vendas: <strong className="text-emerald-400">{formatKz(calculations.total_vendas_brutas)}</strong></span>
+            <span>Vendas: <strong className="text-sky-400">{formatKz(calculations.total_vendas_brutas)}</strong></span>
             <span>•</span>
             {calculations.recarga_aki_lucro > 0 && (
               <>
-                <span>+ Bónus AKI: <strong className="text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</strong></span>
+                <span>+ Bónus AKI: <strong className="text-sky-300">+{formatKz(calculations.recarga_aki_lucro)}</strong></span>
                 <span>•</span>
               </>
             )}
             {calculations.zap_lucro > 0 && (
               <>
-                <span>+ Bónus ZAP: <strong className="text-emerald-300">+{formatKz(calculations.zap_lucro)}</strong></span>
+                <span>+ Bónus ZAP: <strong className="text-sky-300">+{formatKz(calculations.zap_lucro)}</strong></span>
                 <span>•</span>
               </>
             )}
@@ -601,7 +601,7 @@ export function ReportForm({
                 onClick={() => handleSaveReport(isReportFechado ? 'fechado' : 'rascunho')}
                 className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-4 sm:px-5 py-3 text-xs font-bold text-white hover:bg-slate-700 transition active:scale-95 disabled:opacity-60"
               >
-                <Save size={15} className="text-emerald-400" />
+                <Save size={15} className="text-sky-400" />
                 <span>{saving ? 'A gravar...' : isReportFechado ? 'Guardar Alterações' : 'Guardar Rascunho'}</span>
               </button>
 
@@ -612,7 +612,7 @@ export function ReportForm({
                   setFeedback(null);
                   setCloseConfirmOpen(true);
                 }}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-emerald-950/60 hover:from-emerald-500 hover:to-emerald-400 transition active:scale-95 disabled:opacity-60"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 px-6 py-3.5 text-xs font-bold text-white shadow-lg shadow-sky-950/60 hover:from-sky-500 hover:to-blue-500 transition active:scale-95 disabled:opacity-60"
               >
                 <Lock size={15} />
                 <span>{isReportFechado ? 'Re-confirmar Fecho' : 'Fechar Relatório Diário'}</span>

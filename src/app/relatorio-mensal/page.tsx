@@ -91,11 +91,11 @@ const CHANNEL_CONFIG: Record<
   },
   chips: {
     label: 'Chips',
-    icon: <Coins size={14} className="text-emerald-400" />,
-    color: 'text-emerald-400',
-    badgeBg: 'bg-emerald-950/40 text-emerald-300 border-emerald-700/50',
-    border: 'border-emerald-900/30',
-    bar: 'bg-gradient-to-r from-emerald-600 to-emerald-400',
+    icon: <Coins size={14} className="text-sky-400" />,
+    color: 'text-sky-400',
+    badgeBg: 'bg-sky-950/40 text-sky-300 border-sky-700/50',
+    border: 'border-sky-900/30',
+    bar: 'bg-gradient-to-r from-sky-600 to-sky-400',
   },
 };
 
@@ -358,12 +358,12 @@ function RelatorioMensalContent() {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-600 text-white font-bold">
               <CalendarCheck size={16} />
             </div>
             <div>
               <div className="text-xs font-bold text-white leading-tight">Histórico Mensal</div>
-              <div className="text-[9px] text-emerald-400 font-semibold uppercase">Rápido e Seguro</div>
+              <div className="text-[9px] text-sky-400 font-semibold uppercase">Rápido e Seguro</div>
             </div>
           </div>
         </div>
@@ -375,8 +375,8 @@ function RelatorioMensalContent() {
         <header className="hidden lg:block sticky top-0 z-30 border-b border-slate-800 bg-[#070b14]/95 px-8 py-4 backdrop-blur-md">
           <div className="flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="flex items-center gap-2 text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">
+                <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
                 Arquivo de Relatórios Mensais
               </div>
               <h1 className="text-lg font-bold text-white tracking-tight">
@@ -392,7 +392,7 @@ function RelatorioMensalContent() {
                 href="/historico"
                 className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition"
               >
-                <FileSpreadsheet size={14} className="text-emerald-400" />
+                <FileSpreadsheet size={14} className="text-sky-400" />
                 <span>Arquivo Diário Geral</span>
               </Link>
             </div>
@@ -406,7 +406,7 @@ function RelatorioMensalContent() {
             <div
               className={`flex items-center gap-2.5 rounded-xl p-3.5 text-xs font-semibold shadow-lg transition-all animate-fadeIn ${
                 feedback.type === 'success'
-                  ? 'border border-emerald-800 bg-emerald-950/90 text-emerald-300'
+                  ? 'border border-sky-800 bg-sky-950/90 text-sky-300'
                   : 'border border-rose-800 bg-rose-950/90 text-rose-300'
               }`}
             >
@@ -421,14 +421,14 @@ function RelatorioMensalContent() {
               {/* Filtro de Ano */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-                  <Filter size={14} className="text-emerald-400" />
+                  <Filter size={14} className="text-sky-400" />
                   Ano:
                 </span>
                 <button
                   onClick={() => setSelectedYear('all')}
                   className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
                     selectedYear === 'all'
-                      ? 'bg-emerald-600 text-white shadow-md'
+                      ? 'bg-sky-600 text-white shadow-md'
                       : 'bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
@@ -440,7 +440,7 @@ function RelatorioMensalContent() {
                     onClick={() => setSelectedYear(yr)}
                     className={`rounded-xl px-3 py-1.5 text-xs font-bold transition ${
                       selectedYear === yr
-                        ? 'bg-emerald-600 text-white shadow-md'
+                        ? 'bg-sky-600 text-white shadow-md'
                         : 'bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
@@ -457,7 +457,7 @@ function RelatorioMensalContent() {
                   placeholder="Pesquisar mês ou posto..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-[#070b14] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-emerald-500 transition"
+                  className="w-full rounded-xl border border-slate-700 bg-[#070b14] pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:border-sky-500 transition"
                 />
               </div>
             </div>
@@ -466,7 +466,7 @@ function RelatorioMensalContent() {
             {user?.role === 'admin' && (
               <div className="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold">
-                  <Store size={14} className="text-emerald-400" />
+                  <Store size={14} className="text-sky-400" />
                   <span>Filtrar por Posto:</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5 bg-slate-900/80 p-1.5 rounded-xl border border-slate-800">
@@ -474,7 +474,7 @@ function RelatorioMensalContent() {
                     onClick={() => setSelectedPostoId('all')}
                     className={`rounded-lg px-2.5 py-1 text-xs font-bold transition flex items-center gap-1.5 ${
                       selectedPostoId === 'all'
-                        ? 'bg-emerald-600 text-white shadow-md'
+                        ? 'bg-sky-600 text-white shadow-md'
                         : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                     }`}
                   >
@@ -487,7 +487,7 @@ function RelatorioMensalContent() {
                       onClick={() => setSelectedPostoId(p.id)}
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold transition flex items-center gap-1.5 ${
                         selectedPostoId === p.id
-                          ? 'bg-emerald-600 text-white shadow-md'
+                          ? 'bg-sky-600 text-white shadow-md'
                           : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                       }`}
                     >
@@ -503,21 +503,21 @@ function RelatorioMensalContent() {
           {/* KPIs Globais dos Meses Selecionados */}
           {!loading && filteredMonths.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              <div className="rounded-2xl border border-emerald-900/40 bg-gradient-to-br from-[#0c1f17] to-[#080d19] p-4 shadow-lg">
+              <div className="rounded-2xl border border-sky-900/40 bg-gradient-to-br from-[#040d1a] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Total Vendas</span>
-                  <DollarSign size={14} className="text-emerald-400" />
+                  <span className="text-[10px] font-bold text-sky-400 uppercase tracking-wider">Total Vendas</span>
+                  <DollarSign size={14} className="text-sky-400" />
                 </div>
-                <div className="text-lg font-extrabold text-emerald-400 font-mono">{formatKz(globalKpis.totalVendas)}</div>
+                <div className="text-lg font-extrabold text-sky-400 font-mono">{formatKz(globalKpis.totalVendas)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">{globalKpis.totalReports} relatórios em {filteredMonths.length} {filteredMonths.length === 1 ? 'mês' : 'meses'}</p>
               </div>
 
-              <div className="rounded-2xl border border-emerald-800/40 bg-gradient-to-br from-[#0d271d] to-[#080d19] p-4 shadow-lg">
+              <div className="rounded-2xl border border-sky-800/40 bg-gradient-to-br from-[#040d1a] to-[#080d19] p-4 shadow-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Lucro (+Taxas)</span>
-                  <TrendingUp size={14} className="text-emerald-300" />
+                  <span className="text-[10px] font-bold text-sky-300 uppercase tracking-wider">Lucro (+Taxas)</span>
+                  <TrendingUp size={14} className="text-sky-300" />
                 </div>
-                <div className="text-lg font-extrabold text-emerald-300 font-mono">{formatKz(globalKpis.totalLucro)}</div>
+                <div className="text-lg font-extrabold text-sky-300 font-mono">{formatKz(globalKpis.totalLucro)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">Taxas de todos os canais</p>
               </div>
 
@@ -539,12 +539,12 @@ function RelatorioMensalContent() {
                 <p className="text-[10px] text-slate-500 mt-1">Despesas totais</p>
               </div>
 
-              <div className={`rounded-2xl border p-4 shadow-xl ${globalKpis.resultadoLiquido >= 0 ? 'border-emerald-500/40 bg-gradient-to-br from-[#0e3120] to-[#080d19]' : 'border-rose-500/40 bg-gradient-to-br from-[#330f16] to-[#080d19]'}`}>
+              <div className={`rounded-2xl border p-4 shadow-xl ${globalKpis.resultadoLiquido >= 0 ? 'border-sky-500/40 bg-gradient-to-br from-[#040d1a] to-[#080d19]' : 'border-rose-500/40 bg-gradient-to-br from-[#330f16] to-[#080d19]'}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${globalKpis.resultadoLiquido >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>Resultado Líquido</span>
-                  <ShieldCheck size={14} className={globalKpis.resultadoLiquido >= 0 ? 'text-emerald-300' : 'text-rose-300'} />
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${globalKpis.resultadoLiquido >= 0 ? 'text-sky-300' : 'text-rose-300'}`}>Resultado Líquido</span>
+                  <ShieldCheck size={14} className={globalKpis.resultadoLiquido >= 0 ? 'text-sky-300' : 'text-rose-300'} />
                 </div>
-                <div className={`text-lg font-extrabold font-mono ${globalKpis.resultadoLiquido >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>{formatKz(globalKpis.resultadoLiquido)}</div>
+                <div className={`text-lg font-extrabold font-mono ${globalKpis.resultadoLiquido >= 0 ? 'text-sky-300' : 'text-rose-300'}`}>{formatKz(globalKpis.resultadoLiquido)}</div>
                 <p className="text-[10px] text-slate-500 mt-1">Vendas + Taxas + Aki - Saídas</p>
               </div>
             </div>
@@ -555,7 +555,7 @@ function RelatorioMensalContent() {
             <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-800">
               <div>
                 <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <CalendarDays size={16} className="text-emerald-400" />
+                  <CalendarDays size={16} className="text-sky-400" />
                   Arquivo de Meses e Desempenho por Canal
                 </h2>
                 <p className="text-[11px] text-slate-400 mt-0.5">
@@ -569,7 +569,7 @@ function RelatorioMensalContent() {
 
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
                 <span className="text-xs text-slate-400">A compilar relatórios e métricas de canais...</span>
               </div>
             ) : filteredMonths.length === 0 ? (
@@ -587,7 +587,7 @@ function RelatorioMensalContent() {
                 ) : (
                   <Link
                     href="/?view=novo"
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition"
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-4 py-2 text-xs font-bold text-white hover:bg-sky-500 transition"
                   >
                     Criar Primeiro Relatório
                   </Link>
@@ -619,7 +619,7 @@ function RelatorioMensalContent() {
                       key={m.yearMonth}
                       className={`p-4 sm:p-6 transition-colors ${
                         isCurrent
-                          ? 'bg-emerald-950/15 border-l-4 border-l-emerald-500'
+                          ? 'bg-sky-950/15 border-l-4 border-l-sky-500'
                           : 'hover:bg-slate-800/10'
                       }`}
                     >
@@ -629,7 +629,7 @@ function RelatorioMensalContent() {
                           <div
                             className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border text-sm font-black shadow-md ${
                               isCurrent
-                                ? 'bg-emerald-600/20 border-emerald-500/50 text-emerald-300'
+                                ? 'bg-sky-600/20 border-sky-500/50 text-sky-300'
                                 : 'bg-slate-800/80 border-slate-700 text-slate-300'
                             }`}
                           >
@@ -637,12 +637,12 @@ function RelatorioMensalContent() {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h3 className={`font-bold text-base ${isCurrent ? 'text-emerald-300' : 'text-white'}`}>
+                              <h3 className={`font-bold text-base ${isCurrent ? 'text-sky-300' : 'text-white'}`}>
                                 {m.label}
                               </h3>
                               {isCurrent ? (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950 border border-emerald-600/50 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                <span className="inline-flex items-center gap-1 rounded-full bg-sky-950 border border-sky-600/50 px-2 py-0.5 text-[10px] font-bold text-sky-300">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse" />
                                   Mês Atual
                                 </span>
                               ) : (
@@ -653,7 +653,7 @@ function RelatorioMensalContent() {
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
                               {m.closedCount === m.reportCount && m.reportCount > 0 ? (
-                                <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+                                <span className="inline-flex items-center gap-1 text-[10px] text-sky-400 font-semibold">
                                   <CheckCircle2 size={11} /> {m.reportCount} fechados
                                 </span>
                               ) : (
@@ -674,7 +674,7 @@ function RelatorioMensalContent() {
                         <div
                           className={`flex flex-col items-end shrink-0 rounded-2xl px-4 py-2 border shadow-lg ${
                             isPositive
-                              ? 'bg-emerald-950/40 border-emerald-700/50'
+                              ? 'bg-sky-950/40 border-sky-700/50'
                               : 'bg-rose-950/40 border-rose-700/50'
                           }`}
                         >
@@ -683,7 +683,7 @@ function RelatorioMensalContent() {
                           </span>
                           <span
                             className={`text-lg sm:text-xl font-black font-mono ${
-                              isPositive ? 'text-emerald-300' : 'text-rose-300'
+                              isPositive ? 'text-sky-300' : 'text-rose-300'
                             }`}
                           >
                             {isPositive ? '+' : ''}{formatKz(m.resultadoLiquido)}
@@ -697,7 +697,7 @@ function RelatorioMensalContent() {
                           <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-1">
                             Vendas Brutas
                           </div>
-                          <div className="text-sm font-bold text-emerald-400 font-mono">
+                          <div className="text-sm font-bold text-sky-400 font-mono">
                             {formatKz(m.totalVendas)}
                           </div>
                         </div>
@@ -705,7 +705,7 @@ function RelatorioMensalContent() {
                           <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-1">
                             Lucro (+Taxas)
                           </div>
-                          <div className="text-sm font-bold text-emerald-300 font-mono">
+                          <div className="text-sm font-bold text-sky-300 font-mono">
                             {formatKz(m.totalLucro)}
                           </div>
                         </div>
@@ -731,7 +731,7 @@ function RelatorioMensalContent() {
                       <div className="space-y-2 mb-4">
                         <div className="flex items-center justify-between text-[10px] text-slate-500">
                           <span>Margem de resultado líquido sobre vendas</span>
-                          <span className={`font-bold ${lucroRatio >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          <span className={`font-bold ${lucroRatio >= 0 ? 'text-sky-400' : 'text-rose-400'}`}>
                             {lucroRatio.toFixed(1)}%
                           </span>
                         </div>
@@ -739,7 +739,7 @@ function RelatorioMensalContent() {
                           <div
                             className={`h-full rounded-full transition-all ${
                               isPositive
-                                ? 'bg-gradient-to-r from-emerald-600 to-emerald-400'
+                                ? 'bg-gradient-to-r from-sky-600 to-sky-400'
                                 : 'bg-gradient-to-r from-rose-600 to-rose-400'
                             }`}
                             style={{ width: `${Math.min(Math.abs(lucroRatio), 100)}%` }}
@@ -750,11 +750,11 @@ function RelatorioMensalContent() {
                           <>
                             <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1">
                               <span>Progresso temporal do mês atual</span>
-                              <span className="font-bold text-emerald-400">{progress}%</span>
+                              <span className="font-bold text-sky-400">{progress}%</span>
                             </div>
                             <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
                               <div
-                                className="h-full rounded-full bg-gradient-to-r from-emerald-800 to-emerald-500 transition-all"
+                                className="h-full rounded-full bg-gradient-to-r from-sky-800 to-sky-500 transition-all"
                                 style={{ width: `${progress}%` }}
                               />
                             </div>
@@ -767,7 +767,7 @@ function RelatorioMensalContent() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-800/70">
                           <div>
                             <div className="flex items-center gap-2">
-                              <PieChart size={15} className="text-emerald-400" />
+                              <PieChart size={15} className="text-sky-400" />
                               <h4 className="text-xs font-bold text-white uppercase tracking-wider">
                                 Métricas por Canal de Venda ({m.label})
                               </h4>
@@ -784,7 +784,7 @@ function RelatorioMensalContent() {
                               onClick={() => setChannelViewMode((prev) => ({ ...prev, [m.yearMonth]: 'cards' }))}
                               className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
                                 viewMode === 'cards'
-                                  ? 'bg-emerald-600 text-white shadow'
+                                  ? 'bg-sky-600 text-white shadow'
                                   : 'text-slate-400 hover:text-white'
                               }`}
                             >
@@ -795,7 +795,7 @@ function RelatorioMensalContent() {
                               onClick={() => setChannelViewMode((prev) => ({ ...prev, [m.yearMonth]: 'table' }))}
                               className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
                                 viewMode === 'table'
-                                  ? 'bg-emerald-600 text-white shadow'
+                                  ? 'bg-sky-600 text-white shadow'
                                   : 'text-slate-400 hover:text-white'
                               }`}
                             >
@@ -810,11 +810,11 @@ function RelatorioMensalContent() {
                             {channelsList.map((ch) => {
                               const cfg = CHANNEL_CONFIG[ch.canal] || {
                                 label: ch.nome,
-                                icon: <Coins size={14} className="text-emerald-400" />,
-                                color: 'text-emerald-400',
-                                badgeBg: 'bg-emerald-950/40 text-emerald-300 border-emerald-700/50',
+                                icon: <Coins size={14} className="text-sky-400" />,
+                                color: 'text-sky-400',
+                                badgeBg: 'bg-sky-950/40 text-sky-300 border-sky-700/50',
                                 border: 'border-slate-800',
-                                bar: 'bg-emerald-500',
+                                bar: 'bg-sky-500',
                               };
 
                               return (
@@ -849,7 +849,7 @@ function RelatorioMensalContent() {
                                       <div className="text-[10px] text-slate-500 font-medium uppercase">
                                         + Taxa / Lucro
                                       </div>
-                                      <div className="text-xs sm:text-sm font-bold text-emerald-400 font-mono">
+                                      <div className="text-xs sm:text-sm font-bold text-sky-400 font-mono">
                                         +{formatKz(ch.totalTaxa)}
                                       </div>
                                     </div>
@@ -858,7 +858,7 @@ function RelatorioMensalContent() {
                                   {/* Subtotal Arrecadado */}
                                   <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-800/40">
                                     <span className="text-slate-400">Arrecadado:</span>
-                                    <span className="font-bold text-emerald-300 font-mono">
+                                    <span className="font-bold text-sky-300 font-mono">
                                       {formatKz(ch.totalArrecadado)}
                                     </span>
                                   </div>
@@ -906,10 +906,10 @@ function RelatorioMensalContent() {
                                       <td className="p-3 text-right font-mono font-bold text-white">
                                         {formatKz(ch.totalVendido)}
                                       </td>
-                                      <td className="p-3 text-right font-mono font-bold text-emerald-400">
+                                      <td className="p-3 text-right font-mono font-bold text-sky-400">
                                         +{formatKz(ch.totalTaxa)}
                                       </td>
-                                      <td className="p-3 text-right font-mono font-bold text-emerald-300">
+                                      <td className="p-3 text-right font-mono font-bold text-sky-300">
                                         {formatKz(ch.totalArrecadado)}
                                       </td>
                                       <td className="p-3 text-center font-mono font-semibold text-slate-300">
@@ -925,13 +925,13 @@ function RelatorioMensalContent() {
                               <tfoot>
                                 <tr className="border-t-2 border-slate-700 bg-slate-900/80 font-bold text-white">
                                   <td className="p-3 uppercase">SUBTOTAL GERAL</td>
-                                  <td className="p-3 text-right font-mono text-emerald-400">
+                                  <td className="p-3 text-right font-mono text-sky-400">
                                     {formatKz(m.totalVendas)}
                                   </td>
-                                  <td className="p-3 text-right font-mono text-emerald-300">
+                                  <td className="p-3 text-right font-mono text-sky-300">
                                     +{formatKz(m.totalLucro)}
                                   </td>
-                                  <td className="p-3 text-right font-mono text-emerald-200">
+                                  <td className="p-3 text-right font-mono text-sky-200">
                                     {formatKz(m.totalVendas + m.totalLucro)}
                                   </td>
                                   <td className="p-3 text-center font-mono">100.0%</td>
@@ -977,7 +977,7 @@ function RelatorioMensalContent() {
                           type="button"
                           onClick={() => handleDownloadMonthlyPdf(m)}
                           disabled={isDownloading}
-                          className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-950/60 transition disabled:opacity-60"
+                          className="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-95 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-sky-900/60/60 transition disabled:opacity-60"
                         >
                           {isDownloading ? (
                             <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -1013,11 +1013,11 @@ function RelatorioMensalContent() {
                           onClick={() => toggleExpandMonth(m)}
                           className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-bold transition active:scale-95 border ${
                             isExpanded
-                              ? 'bg-emerald-950/60 border-emerald-600 text-emerald-300'
+                              ? 'bg-sky-950/60 border-sky-600 text-sky-300'
                               : 'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'
                           }`}
                         >
-                          <FileSpreadsheet size={13} className="text-emerald-400" />
+                          <FileSpreadsheet size={13} className="text-sky-400" />
                           <span>
                             {isExpanded
                               ? 'Recolher Fechos do Mês'
@@ -1042,7 +1042,7 @@ function RelatorioMensalContent() {
                           <div className="rounded-2xl border border-slate-800 bg-[#091120] overflow-hidden">
                             <div className="p-3.5 sm:p-4 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <CalendarCheck size={15} className="text-emerald-400" />
+                                <CalendarCheck size={15} className="text-sky-400" />
                                 <h4 className="text-xs font-bold text-white uppercase tracking-wider">
                                   Fechos Diários de {m.label} ({daysList.length} dias registados)
                                 </h4>
@@ -1054,7 +1054,7 @@ function RelatorioMensalContent() {
 
                             {isLoadingDays ? (
                               <div className="flex flex-col items-center justify-center py-10 gap-3">
-                                <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+                                <div className="h-6 w-6 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
                                 <span className="text-xs text-slate-400">A carregar fechos de {m.label}...</span>
                               </div>
                             ) : daysList.length === 0 ? (
@@ -1096,10 +1096,10 @@ function RelatorioMensalContent() {
                                               {rep.user?.nome || 'Operador'}
                                             </div>
                                           </td>
-                                          <td className="p-3 text-right font-mono text-emerald-400 font-semibold">
+                                          <td className="p-3 text-right font-mono text-sky-400 font-semibold">
                                             {formatKz(rep.total_vendas_brutas || 0)}
                                           </td>
-                                          <td className="p-3 text-right font-mono text-emerald-300">
+                                          <td className="p-3 text-right font-mono text-sky-300">
                                             {formatKz(rep.total_taxas_acrescentadas || 0)}
                                           </td>
                                           <td className="p-3 text-right font-mono text-yellow-400">
@@ -1111,7 +1111,7 @@ function RelatorioMensalContent() {
                                           <td className="p-3 text-right font-mono font-bold">
                                             <span
                                               className={
-                                                dayPositive ? 'text-emerald-400' : 'text-rose-400'
+                                                dayPositive ? 'text-sky-400' : 'text-rose-400'
                                               }
                                             >
                                               {dayPositive ? '+' : ''}{formatKz(rep.total_final || 0)}
@@ -1119,7 +1119,7 @@ function RelatorioMensalContent() {
                                           </td>
                                           <td className="p-3 text-center">
                                             {rep.status === 'fechado' ? (
-                                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950/80 border border-emerald-600/40 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                                              <span className="inline-flex items-center gap-1 rounded-full bg-sky-950/80 border border-sky-600/40 px-2 py-0.5 text-[10px] font-bold text-sky-300">
                                                 Fechado
                                               </span>
                                             ) : (
@@ -1140,7 +1140,7 @@ function RelatorioMensalContent() {
                                               <button
                                                 type="button"
                                                 onClick={() => handleDownloadDayPdf(rep)}
-                                                className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900 hover:text-white transition"
+                                                className="p-1.5 rounded-lg bg-sky-950/80 border border-sky-700/60 text-sky-300 hover:bg-sky-900 hover:text-white transition"
                                                 title="Baixar PDF deste Dia"
                                               >
                                                 <Download size={13} />
@@ -1175,7 +1175,7 @@ export default function RelatorioMensalPage() {
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
             <span className="text-xs text-slate-400">A carregar histórico mensal...</span>
           </div>
         </div>
@@ -1185,3 +1185,5 @@ export default function RelatorioMensalPage() {
     </Suspense>
   );
 }
+
+

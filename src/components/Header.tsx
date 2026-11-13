@@ -48,11 +48,11 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-wrap items-center gap-3">
         {/* Date & Time Widget */}
         <div className="hidden sm:flex items-center gap-2.5 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs text-slate-300">
-          <Calendar size={14} className="text-emerald-400" />
+          <Calendar size={14} className="text-sky-400" />
           <span>{formatDatePt(today)}</span>
           <span className="text-slate-600">|</span>
           <Clock size={14} className="text-cyan-400" />
-          <span className="font-mono text-emerald-300 font-medium">{time || '--:--:--'}</span>
+          <span className="font-mono text-sky-300 font-medium">{time || '--:--:--'}</span>
         </div>
 
         {/* Botão de Download / Instalação do App */}
@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Quick action buttons */}
         <Link
           href="/vendas"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm shadow-emerald-900/40 transition-all duration-200 hover:bg-emerald-500 hover:shadow-emerald-900/60"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm shadow-sky-900/40 transition-all duration-200 hover:bg-sky-500 hover:shadow-sky-900/60"
         >
           <PlusCircle size={15} />
           <span>+ Registar Venda</span>

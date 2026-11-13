@@ -1,0 +1,51 @@
+        )}
+      </main>
+
+      {/* Modal: Novo Cliente */}
+      <NewCustomerModal
+        isOpen={isNewCustomerModalOpen}
+        onClose={() => setIsNewCustomerModalOpen(false)}
+        onCreated={handleCustomerCreated}
+        postos={postos}
+        userRole={user?.role}
+        defaultPostoId={user?.role === 'vendedor' ? user.postoId || undefined : undefined}
+      />
+
+      {/* Modal: Nova Venda a Grosso */}
+      <NewSaleModal
+        isOpen={isNewSaleModalOpen}
+        onClose={() => setIsNewSaleModalOpen(false)}
+        customer={selectedCustomer}
+        onSaleCreated={handleSaleCreated}
+      />
+
+      {/* Gaveta / Detalhes do Cliente */}
+      <CustomerDetailDrawer
+        isOpen={Boolean(selectedCustomer) && !isNewSaleModalOpen}
+        onClose={() => setSelectedCustomer(null)}
+        customer={selectedCustomer}
+        onOpenNewSale={() => setIsNewSaleModalOpen(true)}
+        onSaleDeleted={handleSaleDeleted}
+        userRole={user?.role}
+      />
+    </div>
+  );
+}
+
+export default function WholesalePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
+            <span className="text-xs text-slate-400">A carregar Vendas a Grosso...</span>
+          </div>
+        </div>
+      }
+    >
+      <WholesaleContent />
+    </Suspense>
+  );
+}
+

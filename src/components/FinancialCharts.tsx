@@ -77,7 +77,7 @@ export const FinancialCharts: React.FC<FinancialChartsProps> = ({ summary, timel
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="h-2 w-2 rounded-full bg-sky-500" />
               Evolução Diária (Vendas, Lucros e Saídas)
             </h3>
             <p className="text-xs text-slate-400">

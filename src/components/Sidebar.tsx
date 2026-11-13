@@ -16,10 +16,12 @@ import {
   FilePlus2,
   CalendarCheck,
   FileSpreadsheet,
+  ShoppingBag,
   X,
 } from 'lucide-react';
 import { AuthUser } from '@/types';
 import { SidebarInstallCard } from '@/components/InstallPwaButton';
+import { BrandLogo } from '@/components/BrandLogo';
 
 interface SidebarProps {
   user: AuthUser | null;
@@ -61,7 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: LayoutDashboard,
       description: 'Visão executiva e métricas',
       isTab: true,
-      color: 'emerald',
+      color: 'sky',
     },
     {
       id: 'novo',
@@ -71,7 +73,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       description: 'Lançamento rápido do dia',
       isTab: true,
       highlight: true,
-      color: 'emerald',
+      color: 'sky',
+    },
+    {
+      id: 'vendas-a-grosso',
+      label: 'Vendas a Grosso',
+      href: '/vendas-a-grosso',
+      icon: ShoppingBag,
+      description: 'Clientes & revenda por produto',
+      isTab: false,
+      color: 'sky',
     },
     {
       id: 'weekly',
@@ -80,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: CalendarRange,
       description: 'Fecho & métricas da semana',
       isTab: true,
-      color: 'emerald',
+      color: 'sky',
     },
     {
       id: 'monthly',
@@ -89,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: CalendarCheck,
       description: 'Consolidado do mês',
       isTab: true,
-      color: 'emerald',
+      color: 'sky',
     },
     {
       id: 'historico',
@@ -129,26 +140,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <div className="p-4 flex flex-col h-[calc(100vh-80px)] overflow-y-auto">
           {/* Brand Header & Mobile Close Button */}
-          <div className="flex items-center justify-between px-2 pt-1 pb-2">
+          <div className="flex items-center justify-between px-1 pt-1 pb-2">
             <Link
               href="/"
               onClick={() => {
                 if (onCloseMobile) onCloseMobile();
               }}
-              className="flex items-center gap-3 group"
+              className="group"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-950/60 ring-1 ring-emerald-400/40 group-hover:scale-105 transition-all">
-                <Zap size={22} className="fill-white" />
-              </div>
-              <div>
-                <div className="text-sm font-extrabold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-                  Rápido e Seguro
-                </div>
-                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Gestão de Vendas
-                </div>
-              </div>
+              <BrandLogo size="md" />
             </Link>
 
             {/* Close Button on Mobile */}
@@ -161,9 +161,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* Tagline / System Status */}
-          <div className="mt-3 rounded-xl border border-emerald-900/40 bg-emerald-950/20 p-2.5 text-[11px] text-emerald-300 leading-snug flex items-center gap-2">
-            <TrendingUp size={14} className="shrink-0 text-emerald-400" />
-            <span>Fecho de caixa e relatórios diários</span>
+          <div className="mt-3 rounded-xl border border-sky-900/40 bg-sky-950/20 p-2.5 text-[11px] text-sky-300 leading-snug flex items-center gap-2">
+            <TrendingUp size={14} className="shrink-0 text-sky-400" />
+            <span>Fecho de caixa e atacado oficial CSA</span>
           </div>
 
           {/* Separator */}
@@ -206,11 +206,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }}
                   className={`group flex items-center gap-3 rounded-2xl px-3.5 py-3 text-xs font-semibold transition-all ${
                     item.highlight && !isActive
-                      ? 'bg-emerald-600/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/20'
+                      ? 'bg-sky-600/10 text-sky-300 border border-sky-500/30 hover:bg-sky-600/20'
                       : ''
                   } ${
                     isActive
-                      ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-lg shadow-emerald-950/60 border border-emerald-400/40 font-bold'
+                      ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-lg shadow-sky-950/60 border border-sky-400/40 font-bold'
                       : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-100 border border-transparent'
                   }`}
                 >
@@ -219,7 +219,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       isActive
                         ? 'bg-white/20 text-white shadow-inner'
                         : item.highlight
-                        ? 'bg-emerald-500/20 text-emerald-400'
+                        ? 'bg-sky-500/20 text-sky-400'
                         : 'bg-slate-800/80 text-slate-400 group-hover:text-slate-200'
                     }`}
                   >
@@ -227,7 +227,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div className="truncate">
                     <div className="truncate text-white font-medium">{item.label}</div>
-                    <div className={`text-[10px] truncate ${isActive ? 'text-emerald-100 font-normal' : 'text-slate-500'}`}>
+                    <div className={`text-[10px] truncate ${isActive ? 'text-sky-100 font-normal' : 'text-slate-500'}`}>
                       {item.description}
                     </div>
                   </div>
@@ -249,7 +249,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-xs font-bold ${
                   user?.role === 'admin'
-                    ? 'bg-emerald-950/60 border-emerald-700/50 text-emerald-300'
+                    ? 'bg-sky-950/60 border-sky-700/50 text-sky-300'
                     : 'bg-slate-900 border-slate-800 text-slate-300'
                 }`}
               >
@@ -262,7 +262,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="flex items-center gap-1 text-[10px] text-slate-400">
                   <span
                     className={`inline-block h-1.5 w-1.5 rounded-full ${
-                      user?.role === 'admin' ? 'bg-emerald-400' : 'bg-emerald-500'
+                      user?.role === 'admin' ? 'bg-sky-400' : 'bg-sky-500'
                     }`}
                   />
                   {user?.role === 'admin'

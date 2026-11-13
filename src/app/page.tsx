@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { getTodayDateString, formatDatePt, formatKz } from '@/lib/utils';
 import { AuthUser, DailyReport, FinancialSummary, Posto } from '@/types';
 import { HeaderInstallButton } from '@/components/InstallPwaButton';
+import { BrandLogo } from '@/components/BrandLogo';
 
 function DashboardContent() {
   const router = useRouter();
@@ -171,7 +172,7 @@ function DashboardContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 pl-0 lg:pl-64 font-sans selection:bg-emerald-500 selection:text-white transition-all">
+    <div className="min-h-screen bg-[#070b14] text-slate-100 pl-0 lg:pl-64 font-sans selection:bg-sky-500 selection:text-white transition-all">
       <Sidebar
         user={user}
         activeTab={currentView === 'novo' ? 'novo' : currentPeriod}
@@ -189,17 +190,7 @@ function DashboardContent() {
           >
             <Menu size={20} />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
-              <Zap size={16} className="fill-white" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white leading-tight">Rápido e Seguro</div>
-              <div className="text-[9px] text-emerald-400 font-semibold uppercase">
-                {user?.postoNome || 'Gestão de Vendas'}
-              </div>
-            </div>
-          </div>
+          <BrandLogo size="sm" />
         </div>
 
         <div className="flex items-center gap-2">
@@ -209,7 +200,7 @@ function DashboardContent() {
             className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold text-white shadow-md active:scale-95 transition ${
               currentView === 'novo'
                 ? 'bg-slate-800 border border-slate-700 text-slate-300'
-                : 'bg-emerald-600 hover:bg-emerald-500'
+                : 'bg-sky-600 hover:bg-sky-500 shadow-sky-950/60'
             }`}
           >
             {currentView === 'novo' ? <ArrowLeft size={14} /> : <Plus size={14} />}
@@ -236,7 +227,7 @@ function DashboardContent() {
             {dashFeedback && (
               <div className={`flex items-center gap-2.5 rounded-xl p-3.5 text-xs font-semibold ${
                 dashFeedback.type === 'success'
-                  ? 'border border-emerald-800 bg-emerald-950/80 text-emerald-300'
+                  ? 'border border-sky-800 bg-sky-950/80 text-sky-300'
                   : 'border border-rose-800 bg-rose-950/80 text-rose-300'
               }`}>
                 {dashFeedback.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
@@ -277,7 +268,7 @@ function DashboardContent() {
             </div>
             <div className="rounded-xl border border-slate-800 bg-[#070b14] p-3 text-xs flex justify-between">
               <span className="text-slate-400">Total Vendas:</span>
-              <span className="font-mono text-emerald-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
+              <span className="font-mono text-sky-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
             </div>
             <p className="text-xs text-rose-300/90 leading-relaxed bg-rose-950/40 border border-rose-800/40 p-3 rounded-xl">
               {deleteModal.report.status === 'fechado'
@@ -316,8 +307,8 @@ export default function SaaSMainDashboard() {
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
-            <span className="text-xs text-slate-400">A carregar plataforma Rápido e Seguro...</span>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
+            <span className="text-xs text-slate-400">A carregar CSA Rápido e Seguro...</span>
           </div>
         </div>
       }

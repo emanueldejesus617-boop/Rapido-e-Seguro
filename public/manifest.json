@@ -1,16 +1,22 @@
 {
-  "name": "Rápido e Seguro — Gestão de Vendas",
-  "short_name": "Rápido & Seguro",
-  "description": "Sistema Profissional de Controlo Diário de Vendas, Lucros e Saídas da Rápido e Seguro",
+  "name": "CSA — Rápido e Seguro",
+  "short_name": "CSA",
+  "description": "Sistema Profissional de Controlo Diário de Vendas, Lucros, Saídas e Vendas a Grosso — CSA Rápido e Seguro",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#070b14",
-  "theme_color": "#070b14",
+  "background_color": "#070d1e",
+  "theme_color": "#070d1e",
   "categories": ["business", "productivity", "finance"],
   "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",

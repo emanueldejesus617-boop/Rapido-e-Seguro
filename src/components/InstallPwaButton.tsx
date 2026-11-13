@@ -99,12 +99,12 @@ export const InstallHelpModal: React.FC<{
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-950/60">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-950/60">
             <Download size={24} />
           </div>
           <div>
             <h3 className="text-base font-extrabold text-white">Instalar App no Dispositivo</h3>
-            <p className="text-xs text-emerald-400 font-medium">Rápido e Seguro — Vendas</p>
+            <p className="text-xs text-sky-400 font-medium">CSA Rápido e Seguro</p>
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export const InstallHelpModal: React.FC<{
 
             <div className="space-y-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 p-3.5">
               <div className="flex items-start gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-sky-400 font-bold text-xs">
                   1
                 </span>
                 <div>
@@ -125,7 +125,7 @@ export const InstallHelpModal: React.FC<{
               </div>
 
               <div className="flex items-start gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-sky-400 font-bold text-xs">
                   2
                 </span>
                 <div>
@@ -134,7 +134,7 @@ export const InstallHelpModal: React.FC<{
               </div>
 
               <div className="flex items-start gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-sky-400 font-bold text-xs">
                   3
                 </span>
                 <div>
@@ -151,7 +151,7 @@ export const InstallHelpModal: React.FC<{
 
             <div className="space-y-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 p-3.5">
               <div className="flex items-start gap-3">
-                <Smartphone size={18} className="shrink-0 text-emerald-400 mt-0.5" />
+                <Smartphone size={18} className="shrink-0 text-sky-400 mt-0.5" />
                 <div>
                   <strong className="text-white">No Celular Android:</strong> Toque no menu do navegador (3 pontos ⋮) e escolha <strong className="text-white">&quot;Instalar aplicativo&quot;</strong> ou &quot;Adicionar ao ecrã inicial&quot;.
                 </div>
@@ -160,7 +160,7 @@ export const InstallHelpModal: React.FC<{
               <div className="flex items-start gap-3">
                 <Laptop size={18} className="shrink-0 text-cyan-400 mt-0.5" />
                 <div>
-                  <strong className="text-white">No Computador (Chrome/Edge):</strong> Clique no ícone de instalação (<Download size={12} className="inline text-emerald-400" />) na barra de endereço do navegador.
+                  <strong className="text-white">No Computador (Chrome/Edge):</strong> Clique no ícone de instalação (<Download size={12} className="inline text-sky-400" />) na barra de endereço do navegador.
                 </div>
               </div>
             </div>
@@ -170,7 +170,7 @@ export const InstallHelpModal: React.FC<{
         <div className="mt-5 flex justify-end">
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-emerald-500 active:scale-95 transition"
+            className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-4 py-2.5 text-xs font-bold text-white hover:from-sky-400 hover:to-blue-500 active:scale-95 transition shadow-lg shadow-sky-950/50"
           >
             Entendi, fechar
           </button>
@@ -198,9 +198,9 @@ export const HeaderInstallButton: React.FC = () => {
       <button
         onClick={handleClick}
         title="Baixar e Instalar Aplicativo no Dispositivo"
-        className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 hover:text-white hover:border-emerald-400 transition-all duration-200 active:scale-95 group shadow-sm shadow-emerald-950/40"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/40 bg-gradient-to-r from-sky-600/20 to-sky-500/10 px-3 py-1.5 text-xs font-semibold text-sky-300 hover:bg-sky-500/20 hover:text-white hover:border-sky-400 transition-all duration-200 active:scale-95 group shadow-sm shadow-sky-950/40"
       >
-        <Download size={14} className="text-emerald-400 group-hover:scale-110 group-hover:translate-y-0.5 transition-transform" />
+        <Download size={14} className="text-sky-400 group-hover:scale-110 group-hover:translate-y-0.5 transition-transform" />
         <span>Baixar App</span>
       </button>
 
@@ -220,8 +220,8 @@ export const SidebarInstallCard: React.FC = () => {
 
   if (isInstalled) {
     return (
-      <div className="mx-2 mb-2 rounded-2xl border border-emerald-900/40 bg-emerald-950/20 p-2.5 text-[11px] text-emerald-300 flex items-center gap-2">
-        <CheckCircle size={15} className="text-emerald-400 shrink-0" />
+      <div className="mx-2 mb-2 rounded-2xl border border-sky-900/40 bg-sky-950/20 p-2.5 text-[11px] text-sky-300 flex items-center gap-2">
+        <CheckCircle size={15} className="text-sky-400 shrink-0" />
         <span className="font-medium truncate">App Instalado no Dispositivo</span>
       </div>
     );
@@ -233,27 +233,27 @@ export const SidebarInstallCard: React.FC = () => {
 
   return (
     <>
-      <div className="mx-2 mb-2 rounded-2xl border border-emerald-500/30 bg-gradient-to-b from-emerald-950/40 via-slate-900/60 to-slate-900/90 p-3 shadow-lg shadow-emerald-950/30 relative overflow-hidden">
+      <div className="mx-2 mb-2 rounded-2xl border border-sky-500/30 bg-gradient-to-b from-sky-950/40 via-slate-900/60 to-slate-900/90 p-3 shadow-lg shadow-sky-950/30 relative overflow-hidden">
         {/* Glow accent */}
-        <div className="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-emerald-500/10 blur-xl pointer-events-none" />
+        <div className="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-sky-500/10 blur-xl pointer-events-none" />
 
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
             <Download size={14} className="animate-bounce" />
           </div>
           <div>
             <div className="text-xs font-bold text-white leading-tight">Instalar Aplicativo</div>
-            <div className="text-[10px] text-emerald-400">Acesso rápido &amp; offline</div>
+            <div className="text-[10px] text-sky-400">Acesso rápido &amp; offline</div>
           </div>
         </div>
 
         <p className="text-[11px] text-slate-400 leading-relaxed mb-2.5">
-          Tenha a Rápido e Seguro no ecrã inicial do seu telemóvel ou computador.
+          Tenha o CSA Rápido e Seguro no ecrã inicial do seu telemóvel ou computador.
         </p>
 
         <button
           onClick={handleClick}
-          className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow-md shadow-emerald-950/60 hover:bg-emerald-500 active:scale-95 transition-all"
+          className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 px-3 py-2 text-xs font-bold text-white shadow-md shadow-sky-950/60 hover:from-sky-400 hover:to-blue-500 active:scale-95 transition-all"
         >
           <Download size={13} />
           <span>Baixar / Instalar App</span>

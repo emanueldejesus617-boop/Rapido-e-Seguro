@@ -16,6 +16,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { HeaderInstallButton } from '@/components/InstallPwaButton';
+import { BrandLogo } from '@/components/BrandLogo';
 
 const FEATURES = [
   { icon: TrendingUp, label: 'Controlo diário de caixa em tempo real' },
@@ -69,39 +70,33 @@ export default function LoginPage() {
       </div>
 
       {/* ── LEFT PANEL (Hero / Branding) — hidden on mobile ── */}
-      <div className="relative hidden lg:flex lg:w-[52%] flex-col justify-between bg-gradient-to-br from-[#031a10] via-[#06150d] to-[#060911] border-r border-emerald-900/30 p-12 overflow-hidden">
+      <div className="relative hidden lg:flex lg:w-[52%] flex-col justify-between bg-gradient-to-br from-[#021024] via-[#051329] to-[#060911] border-r border-sky-900/30 p-12 overflow-hidden">
 
         {/* Ambient glow orbs */}
-        <div className="pointer-events-none absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-emerald-600/15 blur-[140px]" />
-        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-emerald-400/8 blur-[120px]" />
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/6 blur-[100px]" />
+        <div className="pointer-events-none absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-sky-600/15 blur-[140px]" />
+        <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-blue-500/10 blur-[120px]" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/8 blur-[100px]" />
 
         {/* Top brand mark */}
-        <div className="relative flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-xl shadow-emerald-950/80 ring-1 ring-emerald-400/30">
-            <Zap size={26} className="fill-white text-white" />
-          </div>
-          <div>
-            <div className="text-base font-extrabold tracking-tight text-white">Rápido e Seguro</div>
-            <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">Gestão de Vendas</div>
-          </div>
+        <div className="relative flex items-center">
+          <BrandLogo size="lg" />
         </div>
 
         {/* Central hero content */}
         <div className="relative space-y-8">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-950/50 px-4 py-1.5 text-[11px] font-bold text-emerald-400 uppercase tracking-wider mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Plataforma Profissional
+            <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-950/50 px-4 py-1.5 text-[11px] font-bold text-sky-400 uppercase tracking-wider mb-6">
+              <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse" />
+              Plataforma Profissional CSA
             </div>
             <h1 className="text-4xl xl:text-5xl font-extrabold leading-tight tracking-tight text-white">
               Controlo total<br />
-              <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">
-                do seu caixa
+              <span className="bg-gradient-to-r from-sky-400 via-sky-300 to-blue-400 bg-clip-text text-transparent">
+                do seu caixa e vendas
               </span>
             </h1>
             <p className="mt-5 text-sm text-slate-300 leading-relaxed max-w-sm">
-              Substitua os cadernos em papel pelo sistema digital de fecho de caixa, relatórios e auditoria da Rápido e Seguro.
+              Substitua os cadernos em papel pelo sistema digital de fecho de caixa, atacado e relatórios da CSA - Rápido e Seguro.
             </p>
           </div>
 
@@ -109,7 +104,7 @@ export default function LoginPage() {
           <div className="space-y-3.5">
             {FEATURES.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sky-500/15 border border-sky-500/25 text-sky-400">
                   <Icon size={16} />
                 </div>
                 <span className="text-xs font-medium text-slate-300">{label}</span>
@@ -121,11 +116,11 @@ export default function LoginPage() {
           <div className="grid grid-cols-3 gap-4 pt-2 border-t border-slate-800/80">
             {[
               { value: '100%', label: 'Sem papel' },
-              { value: '6', label: 'Canais de venda' },
+              { value: '6+', label: 'Canais de venda' },
               { value: '24/7', label: 'Disponível' },
             ].map(({ value, label }) => (
               <div key={label} className="text-center">
-                <div className="text-xl font-extrabold text-emerald-400">{value}</div>
+                <div className="text-xl font-extrabold text-sky-400">{value}</div>
                 <div className="text-[10px] text-slate-500 font-medium mt-0.5">{label}</div>
               </div>
             ))}
@@ -151,21 +146,15 @@ export default function LoginPage() {
 
         {/* Mobile-only ambient glow */}
         <div className="pointer-events-none absolute inset-0 lg:hidden">
-          <div className="absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-emerald-600/10 blur-[120px]" />
-          <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-rose-600/5 blur-[100px]" />
+          <div className="absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-sky-600/10 blur-[120px]" />
+          <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-blue-600/5 blur-[100px]" />
         </div>
 
         <div className="relative w-full max-w-sm space-y-8">
 
           {/* Mobile brand mark */}
           <div className="flex lg:hidden flex-col items-center text-center gap-2">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-2xl shadow-emerald-950/70 ring-1 ring-emerald-400/30">
-              <Zap size={34} className="fill-white text-white" />
-            </div>
-            <div>
-              <div className="text-xl font-extrabold tracking-tight text-white mt-3">Rápido e Seguro</div>
-              <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">Gestão de Vendas</div>
-            </div>
+            <BrandLogo size="lg" />
           </div>
 
           {/* Form Card */}
@@ -198,7 +187,7 @@ export default function LoginPage() {
                 </label>
                 <div className={`relative rounded-xl border transition-all duration-200 ${
                   focused === 'email'
-                    ? 'border-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]'
+                    ? 'border-sky-500 shadow-[0_0_0_3px_rgba(14,165,233,0.15)]'
                     : 'border-slate-800 hover:border-slate-700'
                 } bg-[#070b14]`}>
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
@@ -225,7 +214,7 @@ export default function LoginPage() {
                 </label>
                 <div className={`relative rounded-xl border transition-all duration-200 ${
                   focused === 'password'
-                    ? 'border-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]'
+                    ? 'border-sky-500 shadow-[0_0_0_3px_rgba(14,165,233,0.15)]'
                     : 'border-slate-800 hover:border-slate-700'
                 } bg-[#070b14]`}>
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
@@ -257,7 +246,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-950/60 transition-all duration-200 hover:from-emerald-500 hover:to-emerald-400 hover:shadow-emerald-900/60 hover:shadow-xl disabled:opacity-60 active:scale-[0.98]"
+                className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-sky-950/60 transition-all duration-200 hover:from-sky-500 hover:to-blue-500 hover:shadow-sky-900/60 hover:shadow-xl disabled:opacity-60 active:scale-[0.98]"
               >
                 <span className="relative flex items-center justify-center gap-2">
                   {loading ? (

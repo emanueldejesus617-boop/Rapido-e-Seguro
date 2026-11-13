@@ -29,10 +29,10 @@ export const KpiCard: React.FC<KpiCardProps> = ({
     switch (variant) {
       case 'emerald':
         return {
-          bg: 'bg-emerald-950/20 border-emerald-800/40 text-emerald-400',
-          iconBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-          glow: 'from-emerald-500/10',
-          valueColor: 'text-emerald-400',
+          bg: 'bg-sky-950/30 border-sky-800/40 text-sky-400',
+          iconBg: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+          glow: 'from-sky-500/10',
+          valueColor: 'text-sky-400',
         };
       case 'blue':
         return {

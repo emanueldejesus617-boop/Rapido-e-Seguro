@@ -2,26 +2,27 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Rápido e Seguro — Gestão de Vendas',
-  description: 'Sistema Profissional de Controlo Diário de Vendas, Lucros e Saídas da Rápido e Seguro',
+  title: 'CSA — Rápido e Seguro',
+  description: 'Sistema Profissional de Controlo Diário de Vendas, Lucros, Saídas e Vendas a Grosso — CSA Rápido e Seguro',
   manifest: '/manifest.json',
-  applicationName: 'Rápido e Seguro',
+  applicationName: 'CSA Rápido e Seguro',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Rápido e Seguro',
+    title: 'CSA Rápido e Seguro',
   },
   formatDetection: {
     telephone: false,
   },
   icons: {
     icon: [
+      { url: '/images/logo.png', sizes: '512x512', type: 'image/png' },
       { url: '/favicon.png', sizes: '64x64', type: 'image/png' },
       { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon.svg', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/images/logo.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 };
@@ -30,7 +31,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#070b14',
+  themeColor: '#070d1e',
 };
 
 export default function RootLayout({
@@ -45,10 +46,10 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Rápido e Seguro" />
-        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="CSA Rápido e Seguro" />
+        <link rel="apple-touch-icon" href="/images/logo.png" />
       </head>
-      <body className="min-h-screen bg-[#070b14] text-slate-100 antialiased font-sans overflow-x-hidden">
+      <body className="min-h-screen bg-[#070d1e] text-slate-100 antialiased font-sans overflow-x-hidden">
         {children}
         {/* Service Worker Registration */}
         <script

@@ -77,7 +77,7 @@ function ReportDetailContent() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
           <span className="text-xs text-slate-400">A carregar relatório oficial...</span>
         </div>
       </div>
@@ -90,7 +90,7 @@ function ReportDetailContent() {
         <div className="text-center rounded-3xl border border-slate-800 bg-[#0d1424] p-8 max-w-sm w-full">
           <h2 className="text-base font-bold text-white">Relatório não encontrado</h2>
           <p className="text-xs text-slate-400 mt-1">O relatório solicitado não existe ou foi removido.</p>
-          <Link href="/" className="mt-4 inline-block rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition">
+          <Link href="/" className="mt-4 inline-block rounded-xl bg-sky-600 px-4 py-2 text-xs font-bold text-white hover:bg-sky-500 transition">
             Voltar ao Início
           </Link>
         </div>
@@ -130,7 +130,7 @@ function ReportDetailContent() {
                 Relatório — {formatDatePt(report.data)}
               </h1>
               {report.status === 'fechado' ? (
-                <span className="flex items-center gap-1 rounded-full bg-emerald-950/80 px-2 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-600/40">
+                <span className="flex items-center gap-1 rounded-full bg-sky-950/80 px-2 py-0.5 text-[10px] font-bold text-sky-300 border border-sky-600/40">
                   <Lock size={10} /> Fechado
                 </span>
               ) : (
@@ -145,7 +145,7 @@ function ReportDetailContent() {
             {(report.status === 'rascunho' || user?.role === 'admin') && (
               <Link
                 href={`/?view=novo&data=${report.data}&postoId=${report.postoId || ''}`}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3.5 sm:px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-slate-700 hover:text-white transition active:scale-95"
+                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3.5 sm:px-4 py-2 text-xs font-bold text-sky-400 hover:bg-slate-700 hover:text-white transition active:scale-95"
               >
                 <Pencil size={14} />
                 <span>{report.status === 'rascunho' ? 'Continuar Rascunho' : 'Editar Relatório'}</span>
@@ -154,7 +154,7 @@ function ReportDetailContent() {
 
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-lg shadow-emerald-950/50 hover:bg-emerald-500 transition active:scale-95"
+              className="flex items-center gap-1.5 rounded-xl bg-sky-600 px-3.5 sm:px-4 py-2 text-xs font-bold text-white shadow-lg shadow-sky-950/50 hover:bg-sky-500 transition active:scale-95"
             >
               <Printer size={15} />
               <span>Imprimir / PDF</span>
@@ -168,14 +168,14 @@ function ReportDetailContent() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-5 print:border-slate-300 gap-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-emerald-600 text-white font-bold print:border print:border-slate-800 shrink-0">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-sky-600 text-white font-bold print:border print:border-slate-800 shrink-0">
                   <Zap size={26} className="fill-white" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white print:text-black">
                     RÁPIDO E SEGURO
                   </h2>
-                  <p className="text-xs font-medium text-emerald-400 print:text-slate-600">
+                  <p className="text-xs font-medium text-sky-400 print:text-slate-600">
                     Relatório Oficial de Fecho Diário de Recargas
                   </p>
                 </div>
@@ -192,18 +192,18 @@ function ReportDetailContent() {
             </div>
 
             {/* HIGHLIGHT BOX: TOTAL FINAL DO DIA */}
-            <div className="rounded-2xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-950/70 to-[#062e1b] p-4 sm:p-6 shadow-xl print:border-emerald-700 print:bg-emerald-50">
+            <div className="rounded-2xl border-2 border-sky-500 bg-gradient-to-br from-sky-950/70 to-[#062e1b] p-4 sm:p-6 shadow-xl print:border-sky-700 print:bg-sky-50">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 <div>
-                  <span className="text-xs font-black uppercase tracking-wider text-emerald-300 print:text-emerald-900 flex items-center gap-1.5">
-                    <ShieldCheck size={16} className="text-emerald-400 shrink-0" />
+                  <span className="text-xs font-black uppercase tracking-wider text-sky-300 print:text-sky-900 flex items-center gap-1.5">
+                    <ShieldCheck size={16} className="text-sky-400 shrink-0" />
                     TOTAL FINAL DO DIA (RESULTADO LÍQUIDO REAL)
                   </span>
-                  <p className="text-xs text-emerald-400/90 print:text-emerald-800 mt-0.5">
+                  <p className="text-xs text-sky-400/90 print:text-sky-800 mt-0.5">
                     Fórmula: Vendas + Bónus AKI + Bónus ZAP − Saídas.
                   </p>
                 </div>
-                <div className="text-2xl sm:text-3xl font-black text-emerald-300 print:text-emerald-900 font-mono">
+                <div className="text-2xl sm:text-3xl font-black text-sky-300 print:text-sky-900 font-mono">
                   {formatKz(report.total_final)}
                 </div>
               </div>
@@ -221,8 +221,8 @@ function ReportDetailContent() {
                     <tr className="border-b border-slate-800 text-slate-400 print:border-slate-300 print:bg-slate-100 print:text-slate-800">
                       <th className="p-3 font-semibold">Canal de Venda</th>
                       <th className="p-3 font-semibold">Valor Vendido</th>
-                      <th className="p-3 font-semibold text-emerald-400 print:text-emerald-700">+ Taxa Acrescentada</th>
-                      <th className="p-3 font-semibold text-emerald-400 print:text-emerald-700 text-right">
+                      <th className="p-3 font-semibold text-sky-400 print:text-sky-700">+ Taxa Acrescentada</th>
+                      <th className="p-3 font-semibold text-sky-400 print:text-sky-700 text-right">
                         Lucro Parcial (Venda + Taxa)
                       </th>
                     </tr>
@@ -236,10 +236,10 @@ function ReportDetailContent() {
                         <td className="p-3 font-mono text-slate-300 print:text-black">
                           {formatKz(s.valor_vendido)}
                         </td>
-                        <td className="p-3 font-mono text-emerald-400 print:text-emerald-700">
+                        <td className="p-3 font-mono text-sky-400 print:text-sky-700">
                           {s.taxa > 0 ? `+${formatKz(s.taxa)}` : '0 Kz'}
                         </td>
-                        <td className="p-3 font-mono font-bold text-emerald-400 print:text-emerald-800 text-right">
+                        <td className="p-3 font-mono font-bold text-sky-400 print:text-sky-800 text-right">
                           {formatKz(s.lucro_parcial)}
                         </td>
                       </tr>
@@ -250,10 +250,10 @@ function ReportDetailContent() {
                       <td className="p-3 font-mono text-white print:text-black">
                         {formatKz(report.total_vendas_brutas)}
                       </td>
-                      <td className="p-3 font-mono text-emerald-400 print:text-emerald-700">
+                      <td className="p-3 font-mono text-sky-400 print:text-sky-700">
                         +{formatKz(report.total_taxas_acrescentadas || 0)}
                       </td>
-                      <td className="p-3 font-mono text-emerald-400 print:text-emerald-800 text-right">
+                      <td className="p-3 font-mono text-sky-400 print:text-sky-800 text-right">
                         {formatKz(report.soma_lucros_parciais)}
                       </td>
                     </tr>
@@ -263,11 +263,11 @@ function ReportDetailContent() {
             </div>
 
             {/* LUCRO DO AKI (BÓNUS) DESTACADO SEPARADAMENTE */}
-            <div className="rounded-2xl border border-dashed border-emerald-500/40 bg-emerald-950/20 p-4 print:border-emerald-300 print:bg-emerald-50 flex items-center justify-between gap-3">
+            <div className="rounded-2xl border border-dashed border-sky-500/40 bg-sky-950/20 p-4 print:border-sky-300 print:bg-sky-50 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-emerald-400 shrink-0" />
+                <Sparkles size={16} className="text-sky-400 shrink-0" />
                 <div>
-                  <span className="text-xs font-bold text-emerald-300 print:text-emerald-900 uppercase">
+                  <span className="text-xs font-bold text-sky-300 print:text-sky-900 uppercase">
                     Bónus do AKI (Informativo)
                   </span>
                   <p className="text-[11px] text-slate-400 print:text-slate-600 mt-0.5">
@@ -275,7 +275,7 @@ function ReportDetailContent() {
                   </p>
                 </div>
               </div>
-              <div className="text-base sm:text-lg font-black text-emerald-300 print:text-emerald-900 font-mono">
+              <div className="text-base sm:text-lg font-black text-sky-300 print:text-sky-900 font-mono">
                 {formatKz(report.aki_bonus?.valor || 0)}
               </div>
             </div>
@@ -362,7 +362,7 @@ export default function ReportDetailPage() {
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500 border-t-transparent" />
           <span className="text-xs text-slate-400">A carregar relatório...</span>
         </div>
       </div>

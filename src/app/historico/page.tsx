@@ -173,12 +173,12 @@ function HistoricoContent() {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-600 text-white font-bold">
               <Zap size={16} className="fill-white" />
             </div>
             <div>
               <div className="text-xs font-bold text-white leading-tight">Arquivo Digital</div>
-              <div className="text-[9px] text-emerald-400 font-semibold uppercase">Rápido e Seguro</div>
+              <div className="text-[9px] text-sky-400 font-semibold uppercase">Rápido e Seguro</div>
             </div>
           </div>
         </div>
@@ -198,7 +198,7 @@ function HistoricoContent() {
           )}
           <Link
             href="/?view=novo"
-            className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-bold text-white shadow-md active:scale-95 transition hover:bg-emerald-500"
+            className="flex items-center gap-1.5 rounded-xl bg-sky-600 px-3 py-2 text-xs font-bold text-white shadow-md active:scale-95 transition hover:bg-sky-600"
           >
             <Plus size={14} />
             <span>Novo Fecho</span>
@@ -234,7 +234,7 @@ function HistoricoContent() {
               )}
               <Link
                 href="/?view=novo"
-                className="flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 shadow-md shadow-emerald-950/40 transition"
+                className="flex items-center gap-1.5 rounded-xl bg-sky-600 px-4 py-2 text-xs font-bold text-white hover:bg-sky-600 shadow-md shadow-sky-900/60 transition"
               >
                 <Plus size={15} />
                 <span>+ Novo Registo Diário</span>
@@ -248,7 +248,7 @@ function HistoricoContent() {
             <div
               className={`flex items-center gap-2.5 rounded-xl p-3.5 text-xs font-semibold ${
                 feedback.type === 'success'
-                  ? 'border border-emerald-800 bg-emerald-950/80 text-emerald-300'
+                  ? 'border border-sky-500/40 bg-sky-600 text-sky-400'
                   : 'border border-rose-800 bg-rose-950/80 text-rose-300'
               }`}
             >
@@ -264,7 +264,7 @@ function HistoricoContent() {
           >
             <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs">
               <span className="font-semibold text-slate-400 flex items-center gap-1.5">
-                <Filter size={14} className="text-emerald-400" />
+                <Filter size={14} className="text-sky-400" />
                 Filtros:
               </span>
 
@@ -274,7 +274,7 @@ function HistoricoContent() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-emerald-500 text-xs"
+                  className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-sky-500/40 text-xs"
                 />
               </div>
 
@@ -284,14 +284,14 @@ function HistoricoContent() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-emerald-500 text-xs"
+                  className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-sky-500/40 text-xs"
                 />
               </div>
 
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-emerald-500 text-xs"
+                className="rounded-xl border border-slate-700 bg-[#070b14] p-2 text-white outline-none focus:border-sky-500/40 text-xs"
               >
                 <option value="ALL">Todos os Estados</option>
                 <option value="fechado">Apenas Fechados</option>
@@ -316,9 +316,9 @@ function HistoricoContent() {
                     <th className="pb-3 px-3 font-semibold">Data do Relatório</th>
                     <th className="pb-3 px-3 font-semibold">Estado</th>
                     <th className="pb-3 px-3 font-semibold">Vendas Brutas</th>
-                    <th className="pb-3 px-3 font-semibold text-emerald-400">Lucro (+Taxas)</th>
+                    <th className="pb-3 px-3 font-semibold text-sky-400">Lucro (+Taxas)</th>
                     <th className="pb-3 px-3 font-semibold text-rose-400">Total Saídas</th>
-                    <th className="pb-3 px-3 font-semibold text-emerald-300">TOTAL FINAL</th>
+                    <th className="pb-3 px-3 font-semibold text-sky-400">TOTAL FINAL</th>
                     <th className="pb-3 px-3 font-semibold">Responsável</th>
                     <th className="pb-3 px-3 text-right font-semibold">Ações</th>
                   </tr>
@@ -328,13 +328,13 @@ function HistoricoContent() {
                     <tr key={r.id} className="hover:bg-slate-800/30 transition">
                       <td className="py-4 px-3 font-bold text-white">
                         <div className="flex items-center gap-2">
-                          <Calendar size={14} className="text-emerald-400" />
+                          <Calendar size={14} className="text-sky-400" />
                           <span>{formatDatePt(r.data)}</span>
                         </div>
                       </td>
                       <td className="py-4 px-3">
                         {r.status === 'fechado' ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-950/80 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300 border border-emerald-600/40">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-sky-600 px-2.5 py-0.5 text-[10px] font-bold text-sky-400 border border-sky-500/40">
                             <Lock size={10} /> Fechado
                           </span>
                         ) : (
@@ -346,13 +346,13 @@ function HistoricoContent() {
                       <td className="py-4 px-3 font-mono text-slate-200">
                         {formatKz(r.total_vendas_brutas)}
                       </td>
-                      <td className="py-4 px-3 font-mono text-emerald-300 font-semibold">
+                      <td className="py-4 px-3 font-mono text-sky-400 font-semibold">
                         {formatKz(r.total_taxas_acrescentadas || 0)}
                       </td>
                       <td className="py-4 px-3 font-mono text-rose-300 font-semibold">
                         {formatKz(r.total_saidas)}
                       </td>
-                      <td className="py-4 px-3 font-mono font-black text-emerald-400 text-sm">
+                      <td className="py-4 px-3 font-mono font-black text-sky-400 text-sm">
                         {formatKz(r.total_final)}
                       </td>
                       <td className="py-4 px-3 text-slate-300">{r.user?.nome || 'Operador'}</td>
@@ -361,7 +361,7 @@ function HistoricoContent() {
                           {(r.status === 'rascunho' || user?.role === 'admin') && (
                             <Link
                               href={`/?view=novo&data=${r.data}&postoId=${r.postoId || ''}`}
-                              className="flex items-center gap-1 rounded-lg bg-emerald-950/60 border border-emerald-700/50 px-2.5 py-1.5 text-emerald-300 hover:bg-emerald-800 hover:text-white transition text-xs font-semibold"
+                              className="flex items-center gap-1 rounded-lg bg-sky-600 border border-sky-500/40 px-2.5 py-1.5 text-sky-400 hover:bg-sky-600 hover:text-white transition text-xs font-semibold"
                               title={r.status === 'rascunho' ? "Continuar preenchimento deste rascunho" : "Editar relatório"}
                             >
                               <Pencil size={12} />
@@ -373,7 +373,7 @@ function HistoricoContent() {
                             href={`/relatorio/${r.id}`}
                             className="flex items-center gap-1 rounded-lg bg-slate-800 px-2.5 py-1.5 text-slate-200 hover:bg-slate-700 hover:text-white transition text-xs"
                           >
-                            <FileText size={13} className="text-emerald-400" />
+                            <FileText size={13} className="text-sky-400" />
                             <span>PDF</span>
                           </Link>
 
@@ -430,11 +430,11 @@ function HistoricoContent() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Total Vendas:</span>
-                  <span className="font-mono text-emerald-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
+                  <span className="font-mono text-sky-400 font-bold">{formatKz(deleteModal.report.total_vendas_brutas)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Estado:</span>
-                  <span className={deleteModal.report.status === 'fechado' ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+                  <span className={deleteModal.report.status === 'fechado' ? 'text-sky-400 font-bold' : 'text-amber-400 font-bold'}>
                     {deleteModal.report.status === 'fechado' ? 'Fechado / Definitivo' : 'Rascunho'}
                   </span>
                 </div>
@@ -528,7 +528,7 @@ export default function HistoricoArquivoPage() {
     <Suspense fallback={
       <div className="flex min-h-screen items-center justify-center bg-[#070b14] text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-sky-500/40 border-t-transparent" />
           <span className="text-xs text-slate-400">A carregar arquivo digital...</span>
         </div>
       </div>
@@ -537,3 +537,4 @@ export default function HistoricoArquivoPage() {
     </Suspense>
   );
 }
+

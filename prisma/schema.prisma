@@ -11,25 +11,28 @@ generator client {
 }
 
 model Posto {
-  id        String        @id @default(uuid())
-  nome      String        @unique // "Posto 1", "Posto 2"
-  codigo    String        @unique // "posto-1", "posto-2"
-  createdAt DateTime      @default(now())
-  users     User[]
-  reports   DailyReport[]
+  id                 String              @id @default(uuid())
+  nome               String              @unique // "Posto 1", "Posto 2"
+  codigo             String              @unique // "posto-1", "posto-2"
+  createdAt          DateTime            @default(now())
+  users              User[]
+  reports            DailyReport[]
+  wholesaleCustomers WholesaleCustomer[]
+  wholesaleSales     WholesaleSale[]
 }
 
 model User {
-  id           String        @id @default(uuid())
-  nome         String
-  email        String        @unique
-  passwordHash String        @default("$2a$10$wE8wYlW0w2mD1x8/P8q0OuG5m0wFq9K0n1v2x3y4z5a6b7c8d9e0f")
-  papel        String        @default("vendedor") // "admin" | "vendedor"
-  postoId      String?       // null para Gerente (acesso a todos os postos)
-  posto        Posto?        @relation(fields: [postoId], references: [id])
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  reports      DailyReport[]
+  id             String          @id @default(uuid())
+  nome           String
+  email          String          @unique
+  passwordHash   String          @default("$2a$10$wE8wYlW0w2mD1x8/P8q0OuG5m0wFq9K0n1v2x3y4z5a6b7c8d9e0f")
+  papel          String          @default("vendedor") // "admin" | "vendedor"
+  postoId        String?         // null para Gerente (acesso a todos os postos)
+  posto          Posto?          @relation(fields: [postoId], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  reports        DailyReport[]
+  wholesaleSales WholesaleSale[]
 
   @@index([postoId])
 }
@@ -94,4 +97,44 @@ model AppSettings {
   key       String   @id
   value     String
   updatedAt DateTime @updatedAt
+}
+
+// Módulo: Vendas a Grosso
+model WholesaleCustomer {
+  id          String          @id @default(uuid())
+  nome        String
+  telefone    String?
+  localizacao String?
+  postoId     String?
+  posto       Posto?          @relation(fields: [postoId], references: [id], onDelete: SetNull)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  sales       WholesaleSale[]
+
+  @@index([postoId])
+  @@index([nome])
+}
+
+model WholesaleSale {
+  id          String            @id @default(uuid())
+  customerId  String
+  customer    WholesaleCustomer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+  postoId     String?
+  posto       Posto?            @relation(fields: [postoId], references: [id], onDelete: SetNull)
+  data        String            // Formato YYYY-MM-DD
+  produto     String            // "afrivendas" | "zap" | "cartoes_500" | "cartoes_200" | "africel" | "unitel"
+  quantidade  Float             @default(1)
+  valor       Float             @default(0)
+  bonus       Float             @default(0)
+  total       Float             @default(0)
+  observacoes String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([customerId])
+  @@index([data])
+  @@index([produto])
+  @@index([postoId])
 }

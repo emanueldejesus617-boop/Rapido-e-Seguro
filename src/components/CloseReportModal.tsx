@@ -28,10 +28,10 @@ export function CloseReportModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="max-w-md w-full rounded-2xl sm:rounded-3xl border border-emerald-800/80 bg-[#0c1322] p-5 sm:p-6 shadow-2xl space-y-4">
+      <div className="max-w-md w-full rounded-2xl sm:rounded-3xl border border-sky-800/80 bg-[#0c1322] p-5 sm:p-6 shadow-2xl space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
               <Lock size={20} />
             </div>
             <div>
@@ -66,13 +66,13 @@ export function CloseReportModal({
           {calculations.recarga_aki_lucro > 0 && (
             <div className="flex justify-between text-slate-400">
               <span>+ Bónus AKI:</span>
-              <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.recarga_aki_lucro)}</span>
+              <span className="font-mono font-bold text-sky-300">+{formatKz(calculations.recarga_aki_lucro)}</span>
             </div>
           )}
           {calculations.zap_lucro > 0 && (
             <div className="flex justify-between text-slate-400">
               <span>+ Bónus ZAP:</span>
-              <span className="font-mono font-bold text-emerald-300">+{formatKz(calculations.zap_lucro)}</span>
+              <span className="font-mono font-bold text-sky-300">+{formatKz(calculations.zap_lucro)}</span>
             </div>
           )}
           {calculations.lucro_do_aki_bonus > 0 && (
@@ -87,7 +87,7 @@ export function CloseReportModal({
           </div>
           <div className="border-t border-slate-800 pt-2 flex justify-between font-bold text-sm">
             <span className="text-white">Resultado Final:</span>
-            <span className="font-mono text-emerald-400">{formatKz(calculations.total_final)}</span>
+            <span className="font-mono text-sky-400">{formatKz(calculations.total_final)}</span>
           </div>
         </div>
 
@@ -108,7 +108,7 @@ export function CloseReportModal({
             type="button"
             onClick={onConfirm}
             disabled={saving}
-            className="rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg hover:bg-emerald-500 transition disabled:opacity-60 flex items-center gap-2"
+            className="rounded-xl bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg hover:from-sky-500 hover:to-blue-500 transition disabled:opacity-60 flex items-center gap-2"
           >
             {saving ? (
               <>

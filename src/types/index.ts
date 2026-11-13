@@ -148,3 +148,64 @@ export interface MonthlyReport {
   channels?: MonthlyChannelMetric[];
   expensesByCategory?: MonthlyExpenseMetric[];
 }
+
+// ==========================================
+// Módulo: Vendas a Grosso (Atacado)
+// ==========================================
+export type WholesaleProduct =
+  | 'afrivendas'
+  | 'zap'
+  | 'cartoes_500'
+  | 'cartoes_200'
+  | 'africel'
+  | 'unitel';
+
+export interface WholesaleCustomer {
+  id: string;
+  nome: string;
+  telefone?: string | null;
+  localizacao?: string | null;
+  postoId?: string | null;
+  posto?: Posto | null;
+  createdAt: string;
+  updatedAt: string;
+  salesCount?: number;
+  totalSpent?: number;
+  totalBonus?: number;
+  lastSaleDate?: string | null;
+  sales?: WholesaleSale[];
+}
+
+export interface WholesaleSale {
+  id: string;
+  customerId: string;
+  customer?: WholesaleCustomer;
+  userId: string;
+  user?: {
+    id: string;
+    nome: string;
+  };
+  postoId?: string | null;
+  posto?: Posto | null;
+  data: string; // YYYY-MM-DD
+  produto: WholesaleProduct | string;
+  quantidade: number;
+  valor: number;
+  bonus: number;
+  total: number;
+  observacoes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WholesaleSummary {
+  totalCustomers: number;
+  totalSalesCount: number;
+  totalRevenue: number;
+  totalBonus: number;
+  topProduct?: {
+    produto: WholesaleProduct | string;
+    totalVendido: number;
+    quantidade: number;
+  } | null;
+}
